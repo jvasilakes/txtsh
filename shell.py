@@ -8,9 +8,19 @@ class Shell(object):
 
     def __init__(self):
 
+	self.PROMPT = '**>'
+
+	# current subshell (or lack thereof)
+	self.current = self
+
 	self.state = GO
 
 	self.cmd = None
+
+	self.addToMembers()
+
+	
+    def addToMembers(self):
 
 	if not isinstance(self, Subshell):
 	    for shell in self.members:
@@ -23,13 +33,14 @@ class Shell(object):
 			return		
 
 	self.members.append(self)
+
 	
 	    
     def run(self):
 
 	while self.state == GO:
 
-		print PROMPT,
+		print self.PROMPT,
 
 		self.cmd = raw_input()
 
@@ -44,4 +55,24 @@ class Subshell(Shell):
 
 	self.data = data_object
 
+	self.PROMPT = '[using: %d]>' % self.data.id
+
     
+    def run(self):
+
+	#dummy run for now
+
+	while self.state == GO:
+
+	    print self.PROMPT,
+
+	    self.cmd = raw_input()
+
+	    if self.cmd == '!drop':
+		#self.state == STOP
+		break
+
+	    else:
+		self.cmd = raw_input()
+
+	del self

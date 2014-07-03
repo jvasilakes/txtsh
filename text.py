@@ -15,6 +15,8 @@ class Text(object):
 
 	self.numbers = {}
 
+	self.punctuation = {}
+
 	self.members.append(self)
 
     
@@ -22,7 +24,7 @@ class Text(object):
 
 	print error_message
 
-	exit(1)
+	return
 
 
     def set_id(self):
@@ -34,6 +36,24 @@ class Text(object):
 	    return 1
 
 
+    def find_punctuation(self, data_list):
+
+	pass
+
+	"""
+	if not isinstance(data_list, list):
+	    return
+
+	else:
+	    punct = []
+
+
+	    for item in data_list:
+    
+		if not item.isalnum():
+	"""
+
+
     def load_data(self, data):
 
 	self.string = data
@@ -43,18 +63,18 @@ class Text(object):
 	for item in temp:
 
 	    if item.isalpha():
-		list = self.words
+		l = self.words
 	    elif item.isdigit():
-		list = self.numbers
+		l = self.numbers
 	    else:
-		self.throwError("Strings must be alpha-numeric!")
+		self.throwError("Input must be alpha-numeric!")
 
-	    if item in list:
-		list[item] += 1
+	    if item in l:
+		l[item] += 1
 	    else:
-		list.update({item: 1})
+		l.update({item: 1})
 
-	print "Load successful."
+	print "String loaded into id %d." % self.id
 
 
     def overview(self):

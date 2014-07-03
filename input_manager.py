@@ -113,6 +113,15 @@ def _exec(input):
 
 	return GO
 
+    elif args[0] == '!use':
+
+	if len(args) != 2:
+	    print "Syntax error: !use takes one argument."
+
+	command._use(args[1])
+
+	return GO
+
     else:
 	
 	return GO

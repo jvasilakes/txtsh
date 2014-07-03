@@ -1,3 +1,5 @@
+import shell
+
 from text import Text
 
 
@@ -8,6 +10,8 @@ def _quit():
 
 def _help():
 
+    print "\r"
+
     print "--- Available commands ---"
     print "!help: display this help screen."
     print "!quit: quit the shell."
@@ -15,12 +19,14 @@ def _help():
     print "!load STRING: load STRING into database."
     print "!list: print all loaded objects."
 
+    print "\r"
+
     return
 
 
 def _info():
 
-    print "txtsh Text analysis shell (ver. 0.0)"
+    print "TXTSH Text Analysis Shell (ver. 0.0)"
     print "Type '!help' for a list of commands."
     
 
@@ -47,6 +53,19 @@ def _list():
 
 def _use(id):
 
-    pass
-    # Launch subshell in which user can manipulate
-    ## data belonging to id
+    id = int(id)
+
+    object = None
+
+    for member in Text.members:
+	if member.id == id:
+
+	    object = member 
+
+    if not object:
+	print "No object found with id '%d'." % id
+	return
+
+    subsh = shell.Subshell(object)
+    subsh.run()
+
