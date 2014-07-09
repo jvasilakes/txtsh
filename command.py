@@ -1,11 +1,12 @@
 import shell
 
+from header import *
 from text import Text
 
 
 def _quit():
 
-    print "Leaving this horrible shell..."
+    return STOP
 
 
 def _help():
@@ -17,24 +18,55 @@ def _help():
     print "!quit: quit the shell."
     print "!info: display version information."
     print "!load STRING: load STRING into database."
+    print "!free ID: unload object stored in ID."
     print "!list: print all loaded objects."
+    print "!use ID: go to subshell to manipulate data stored in ID."
+    print "!drop: Drop out of subshell created by '!use'."
 
     print "\r"
 
-    return
+    return GO
 
 
 def _info():
 
-    print "TXTSH Text Analysis Shell (ver. 0.0)"
+    print "TXTSH Text Analysis Shell (ver. 0.0) running on %s." % PLATFORM
     print "Type '!help' for a list of commands."
+
+    return GO
     
 
 def _load(string):
 
     new = Text()    
 
-    new.load_data(string)
+    try:
+	new.load_data(string)
+
+	return GO
+
+    except:
+	return STOP
+
+
+def _free(id):
+
+    id = int(id)
+
+    object = None
+
+    for member in Text.members:
+	if member.id == id:
+
+	    object = member 
+
+    if not object:
+	print "No object found with id '%d'." % id
+	return GO
+
+    Text.members.remove(object)
+
+    return GO
 
 
 def _list():
@@ -48,7 +80,9 @@ def _list():
 	for member in Text.members:
 	    print '%2s' % member.id,
 	    print '\t',
-	    print '"%s"' % member.string
+	    print '"%s"' % member.title
+
+    return GO
 
 
 def _use(id):
@@ -64,8 +98,23 @@ def _use(id):
 
     if not object:
 	print "No object found with id '%d'." % id
-	return
+	return GO
 
     subsh = shell.Subshell(object)
     subsh.run()
+
+    return GO
+
+
+# ---- MAPPINGS -----
+
+map = {
+    '!quit': _quit, \
+    '!help': _help, \
+    '!info': _info, \
+    '!load': _load, \
+    '!free': _free, \
+    '!list': _list, \
+    '!use': _use
+       }
 

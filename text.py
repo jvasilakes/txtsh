@@ -1,5 +1,7 @@
 from sys import exit
 
+import nltk
+
 
 class Text(object):
 
@@ -8,6 +10,8 @@ class Text(object):
     def __init__(self):
 
 	self.id = self.set_id()
+
+	self.title = ''
 
 	self.string = ''
 
@@ -36,29 +40,13 @@ class Text(object):
 	    return 1
 
 
-    def find_punctuation(self, data_list):
-
-	pass
-
-	"""
-	if not isinstance(data_list, list):
-	    return
-
-	else:
-	    punct = []
-
-
-	    for item in data_list:
-    
-		if not item.isalnum():
-	"""
-
-
     def load_data(self, data):
+
+	self.title = data[:20]
 
 	self.string = data
 
-	temp = data.split()
+	temp = nltk.word_tokenize(data)
 
 	for item in temp:
 
@@ -67,7 +55,7 @@ class Text(object):
 	    elif item.isdigit():
 		l = self.numbers
 	    else:
-		self.throwError("Input must be alpha-numeric!")
+		l = self.punctuation
 
 	    if item in l:
 		l[item] += 1
@@ -79,28 +67,11 @@ class Text(object):
 
     def overview(self):
 
-	print '"%s"' % self.string
+	print '"%s"' % self.title
 
 	if self.words:
 	    print "Distinct words: %d" % len(self.words)
     
 	if self.numbers:
 	    print "Distinct numbers: %d" % len(self.numbers)
-
-	"""
-	if len(parsed_text) == 1:
-	    print "'%s'" % parsed_text[0]
-
-	elif len(parsed_text) == 2:
-	    print "'%s' and '%s'." % (parsed_text[0], parsed_text[1])
-
-	elif len(parsed_text) > 2:
-	    for word in parsed_text[:(len(parsed_text) - 1)]:
-		    print "'%s'," % word.rstrip(),
-
-	    print "and '%s'." % parsed_text[len(parsed_text) - 1]
-
-	else:
-	    return
-	"""
 

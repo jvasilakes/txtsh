@@ -1,5 +1,5 @@
 from header import *
-from input_manager import input_manager
+from input_manager import InputManager
 
 
 class Shell(object):
@@ -8,10 +8,9 @@ class Shell(object):
 
     def __init__(self):
 
-	self.PROMPT = '**>'
+	self.PROMPT = 'TXTSH>'
 
-	# current subshell (or lack thereof)
-	self.current = self
+	self.input_manager = InputManager(self)
 
 	self.state = GO
 
@@ -44,7 +43,13 @@ class Shell(object):
 
 		self.cmd = raw_input()
 
-		self.state = input_manager(self.cmd)
+		self.state = self.input_manager.manage(self.cmd)
+
+	while self.state == STOP:
+
+		print "Thx 4 using txtsh!!!"
+
+		break
 
 
 class Subshell(Shell):
@@ -55,7 +60,7 @@ class Subshell(Shell):
 
 	self.data = data_object
 
-	self.PROMPT = '[using: %d]>' % self.data.id
+	self.PROMPT = 'ID: %d>' % self.data.id
 
     
     def run(self):
@@ -69,7 +74,6 @@ class Subshell(Shell):
 	    self.cmd = raw_input()
 
 	    if self.cmd == '!drop':
-		#self.state == STOP
 		break
 
 	    else:

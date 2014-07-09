@@ -1,157 +1,98 @@
+from importlib import import_module
+
 import command
 
 from header import *
 
 
-def input_manager(input):
+class InputManager(object):
 
-    if not input:
+    def __init__(self, shell):
 
-	return GO
+        self.shell = shell
 
-    elif is_command(input):
 
-	status = _exec(input)
+    def manage(self, input):
 
-	return status
+        if not input:
 
-    else:
+            return GO
 
-	parsed = parse_text(input)
+        elif self.is_command(input):
 
-	display_text(parsed)
+            status = self._exec(input)
 
-	return GO
+            return status
 
+        else:
 
-def is_command(input):
+            return GO
 
-    args = input.split()
 
-    if args[0].startswith('!'):
-	return True
+    def is_command(self, input):
 
-    else:
-	return False 
+        args = input.split()
 
+        if args[0].startswith('!'):
+	    if args[0] in command.map.keys():
 
-def findArgs(input):
+		return True
 
-    args = input.split(None, 1)
+	    else:
+		print "'%s' is not a valid command." % args[0]
 
-    if len(args) == 1:
-	return args
+        else:
+            return False 
 
-    if args[1].startswith('"') or args[1].startswith("'"):
-    
-	if args[1].startswith('"'):
-	    quote_type = '"'
 
-	elif args[1].startswith("'"):
-	    quote_type = "'"
+    def findArgs(self, input):
 
-	valid_quotes = False
+        args = input.split(None, 1)
 
-	if args[1].endswith(quote_type):
-	    valid_quotes = True
+        if len(args) == 1:
+            return args
 
-	if valid_quotes == False:
-	    print "Syntax error!"
-	    return
+        if args[1].startswith('"') or args[1].startswith("'"):
+	    
+            if args[1].startswith('"'):
+                quote_type = '"'
 
-	temp = args[1].split(quote_type)
-	
-	for item in temp:
-	    if item:
-		args[1] = item
+            elif args[1].startswith("'"):
+                quote_type = "'"
 
-	return args
+            valid_quotes = False
 
-    else:
+            if args[1].endswith(quote_type):
+                valid_quotes = True
 
-	temp = args.pop(1)
+            if valid_quotes == False:
+                print "Syntax error!"
+                return
 
-	args.extend(temp.split())
+            temp = args[1].split(quote_type)
+		
+            for item in temp:
+                if item:
+                    args[1] = item
 
-	return args
-    
+                    return args
 
-def _exec(input):
+        else:
 
-    args = findArgs(input)
+            return args
 
-    if args[0] == '!quit':
-    
-	command._quit()
 
-	return STOP
+    def _exec(self, input):
 
-    elif args[0] == '!help':
+        cmds = import_module('command')
 
-	command._help()
+	args = self.findArgs(input)
 
-	return GO
+	try:
+	    return cmds.map[args[0]]()
 
-    elif args[0] == '!info':
+	except TypeError:
 
-	command._info()
-
-	return GO
-
-    elif args[0] == '!load':
-
-	if len(args) != 2:
-	    print "Syntax error: !load takes one argument."
-
-	command._load(args[1])
-
-	return GO
-
-    elif args[0] == '!list':
-
-	command._list()
-
-	return GO
-
-    elif args[0] == '!use':
-
-	if len(args) != 2:
-	    print "Syntax error: !use takes one argument."
-
-	command._use(args[1])
-
-	return GO
-
-    else:
-	
-	return GO
-
-
-# -------- 2 B DEPRECATED ----------------------------------
-
-def parse_text(text):
-
-	parsed = text.split(' ')
-
-	return parsed
-
-
-def display_text(parsed_text):
-
-	print "You entered %d distinct words:" % len(parsed_text)
-
-	if len(parsed_text) == 1:
-		print "'%s'" % parsed_text[0]
-
-	elif len(parsed_text) == 2:
-		print "'%s' and '%s'." % (parsed_text[0], parsed_text[1])
-
-	elif len(parsed_text) > 2:
-		for word in parsed_text[:(len(parsed_text) - 1)]:
-			print "'%s'," % word.rstrip(),
-
-		print "and '%s'." % parsed_text[len(parsed_text) - 1]
-
-	else:
-		return
+	    rest = ''.join(args[1:])
+	    return cmds.map[args[0]](rest)	
 
