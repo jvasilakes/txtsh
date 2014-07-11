@@ -1,3 +1,4 @@
+import inspect
 from importlib import import_module
 
 from header import *
@@ -10,7 +11,7 @@ class InputManager(object):
         self.shell = shell
 
 
-    def manage(self, input):
+    def manage(self, input, data_object=None):
 
         if not input:
 
@@ -23,11 +24,68 @@ class InputManager(object):
             return status
 
 
+    def _exec(self, input, data_object=None):
+
+	if not input:
+	    return GO
+
+	cmd_set = self.import_cmd_set()
+
+	if not self.is_command(input, cmd_set):
+	    return GO
+
+	args = self.findArgs(input)
+
+	if data_object is not None:
+
+	    if len(args) == 1:
+		status = cmd_set.map[args[0]](data_object)
+
+	    elif len(args) > 1:
+		rest = ''.join(args[1:])
+		status = cmd_set.map[args[0]](data_object, rest)	
+
+	    else:
+		status = GO
+
+	else:
+
+	    if len(args) == 1:
+		status = cmd_set.map[args[0]]()
+
+	    elif len(args) > 1:
+		rest = ''.join(args[1:])
+		status = cmd_set.map[args[0]](rest)	
+
+	    else:
+		status = GO
+
+	return status
+
+
+    def import_cmd_set(self):
+
+	sh_type = self.shell.getType
+
+	if sh_type == 'Shell':
+	    cmds = import_module('command_shell')
+
+	elif sh_type == 'Subshell':
+	    cmds = import_module('command_subshell')
+
+	else:
+	    print "Error: Invalid shell!"
+	    return
+
+	return cmds
+
+
     def is_command(self, input, commands):
 
-        args = input.split()
+        args = input.split(None, 1)
 
         if args[0].startswith('!'):
+
 	    if args[0] in commands.map.keys():
 
 		return True
@@ -77,32 +135,4 @@ class InputManager(object):
 	    else:
 
 		return args
-
-
-    def _exec(self, input):
-
-	sh_type = self.shell.getType
-
-	if sh_type == 'Shell':
-	    cmds = import_module('command_shell')
-
-	elif sh_type == 'Subshell':
-	    cmds = import_module('command_subshell')
-
-	else:
-	    print "Error: Invalid shell!"
-	    return
-
-	if not self.is_command(input, cmds):
-	    return
-
-	args = self.findArgs(input)
-
-	try:
-	    return cmds.map[args[0]]()
-
-	except TypeError:
-
-	    rest = ''.join(args[1:])
-	    return cmds.map[args[0]](rest)	
 

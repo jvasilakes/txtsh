@@ -82,6 +82,9 @@ class Subshell(Shell):
 
 		self.cmd = raw_input()
 
-		self.state = self.input_manager.manage(self.cmd)
+		self.state = self.input_manager._exec(
+						    self.cmd,
+						    data_object=self.data
+						     )
 
 	del self

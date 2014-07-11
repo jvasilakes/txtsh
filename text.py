@@ -50,7 +50,7 @@ class Text(object):
 
 	for item in temp:
 
-	    if item.isalpha():
+	    if item[0].isalpha():
 		l = self.words
 	    elif item.isdigit():
 		l = self.numbers
