@@ -1,7 +1,5 @@
 from importlib import import_module
 
-import command
-
 from header import *
 
 
@@ -18,28 +16,25 @@ class InputManager(object):
 
             return GO
 
-        elif self.is_command(input):
+	else:
 
             status = self._exec(input)
 
             return status
 
-        else:
 
-            return GO
-
-
-    def is_command(self, input):
+    def is_command(self, input, commands):
 
         args = input.split()
 
         if args[0].startswith('!'):
-	    if args[0] in command.map.keys():
+	    if args[0] in commands.map.keys():
 
 		return True
 
 	    else:
 		print "'%s' is not a valid command." % args[0]
+		return False
 
         else:
             return False 
@@ -52,39 +47,54 @@ class InputManager(object):
         if len(args) == 1:
             return args
 
-        if args[1].startswith('"') or args[1].startswith("'"):
-	    
-            if args[1].startswith('"'):
-                quote_type = '"'
+	else:
 
-            elif args[1].startswith("'"):
-                quote_type = "'"
-
-            valid_quotes = False
-
-            if args[1].endswith(quote_type):
-                valid_quotes = True
-
-            if valid_quotes == False:
-                print "Syntax error!"
-                return
-
-            temp = args[1].split(quote_type)
+	    if args[1].startswith('"') or args[1].startswith("'"):
 		
-            for item in temp:
-                if item:
-                    args[1] = item
+		if args[1].startswith('"'):
+		    quote_type = '"'
 
-                    return args
+		elif args[1].startswith("'"):
+		    quote_type = "'"
 
-        else:
+		valid_quotes = False
 
-            return args
+		if args[1].endswith(quote_type):
+		    valid_quotes = True
+
+		if valid_quotes == False:
+		    print "Syntax error!"
+		    return
+
+		temp = args[1].split(quote_type)
+		    
+		for item in temp:
+		    if item:
+			args[1] = item
+
+			return args
+
+	    else:
+
+		return args
 
 
     def _exec(self, input):
 
-        cmds = import_module('command')
+	sh_type = self.shell.getType
+
+	if sh_type == 'Shell':
+	    cmds = import_module('command_shell')
+
+	elif sh_type == 'Subshell':
+	    cmds = import_module('command_subshell')
+
+	else:
+	    print "Error: Invalid shell!"
+	    return
+
+	if not self.is_command(input, cmds):
+	    return
 
 	args = self.findArgs(input)
 

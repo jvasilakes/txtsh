@@ -18,6 +18,15 @@ class Shell(object):
 
 	self.addToMembers()
 
+
+    # Returns shell's type as a string. Used within _exec()
+    @property
+    def getType(self):
+
+	temp = str(type(self))
+
+	return temp.rsplit('.')[-1][:-2]
+
 	
     def addToMembers(self):
 
@@ -36,6 +45,8 @@ class Shell(object):
 	
 	    
     def run(self):
+
+	self.input_manager.manage('!info')
 
 	while self.state == GO:
 
@@ -65,18 +76,12 @@ class Subshell(Shell):
     
     def run(self):
 
-	#dummy run for now
-
 	while self.state == GO:
 
-	    print self.PROMPT,
+		print self.PROMPT,
 
-	    self.cmd = raw_input()
-
-	    if self.cmd == '!drop':
-		break
-
-	    else:
 		self.cmd = raw_input()
+
+		self.state = self.input_manager.manage(self.cmd)
 
 	del self
