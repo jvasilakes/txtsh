@@ -10,21 +10,13 @@ class InputManager(object):
 
         self.shell = shell
 
-
-    def manage(self, input, data_object=None):
-
-        if not input:
-
-            return GO
-
-	else:
-
-            status = self._exec(input)
-
-            return status
+	# Container for cached imports from self.import_cmd_set
+	self.cmd_set_cache = {}
 
 
     def _exec(self, input, data_object=None):
+
+	input = input.strip()
 
 	if not input:
 	    return GO
@@ -37,28 +29,17 @@ class InputManager(object):
 	args = self.findArgs(input)
 
 	if data_object is not None:
+	    args.insert(1, data_object)
 
-	    if len(args) == 1:
-		status = cmd_set.map[args[0]](data_object)
 
-	    elif len(args) > 1:
-		rest = ''.join(args[1:])
-		status = cmd_set.map[args[0]](data_object, rest)	
+	if len(args) == 1:
+	    status = cmd_set.map[args[0]]()
 
-	    else:
-		status = GO
+	elif len(args) > 1:
+	    status = cmd_set.map[args[0]](args[1:])	
 
 	else:
-
-	    if len(args) == 1:
-		status = cmd_set.map[args[0]]()
-
-	    elif len(args) > 1:
-		rest = ''.join(args[1:])
-		status = cmd_set.map[args[0]](rest)	
-
-	    else:
-		status = GO
+	    status = GO
 
 	return status
 
@@ -67,17 +48,25 @@ class InputManager(object):
 
 	sh_type = self.shell.getType
 
-	if sh_type == 'Shell':
-	    cmds = import_module('command_shell')
-
-	elif sh_type == 'Subshell':
-	    cmds = import_module('command_subshell')
+	# Use cached import if available
+	if sh_type in self.cmd_set_cache:
+	    return self.cmd_set_cache[sh_type]
 
 	else:
-	    print "Error: Invalid shell!"
-	    return
 
-	return cmds
+	    if sh_type == 'Shell':
+		cmds = import_module('command_shell')
+
+	    elif sh_type == 'Subshell':
+		cmds = import_module('command_subshell')
+
+	    else:
+		print "Error: Invalid shell!"
+		return
+
+	    self.cmd_set_cache.update({sh_type: cmds})	    
+
+	    return cmds
 
 
     def is_command(self, input, commands):
@@ -100,39 +89,59 @@ class InputManager(object):
 
     def findArgs(self, input):
 
-        args = input.split(None, 1)
+        args = input.split()
 
         if len(args) == 1:
             return args
 
 	else:
 
-	    if args[1].startswith('"') or args[1].startswith("'"):
-		
-		if args[1].startswith('"'):
-		    quote_type = '"'
+	    quote_found = False
 
-		elif args[1].startswith("'"):
-		    quote_type = "'"
+	    for arg in args:
 
-		valid_quotes = False
+		if arg.startswith('"'):
 
-		if args[1].endswith(quote_type):
-		    valid_quotes = True
+		    quote_found = True
+		    valid_quotes = False
+		    start_idx = args.index(arg)
 
-		if valid_quotes == False:
-		    print "Syntax error!"
+		    for arg in args[start_idx:]:
+
+			if arg.endswith('"'):
+			    valid_quotes = True
+			    end_idx = args.index(arg)
+
+			    break
+
+	    # Return with error if valid quotation was not used.
+	    if quote_found:
+
+		if not valid_quotes:
+
+		    print "Error: Incorrect quotation."
 		    return
 
-		temp = args[1].split(quote_type)
-		    
-		for item in temp:
-		    if item:
-			args[1] = item
+		else:
 
-			return args
+		    # Remove quotation.
+		    args[start_idx] = args[start_idx].split('"')[1] 
+		    args[end_idx] = args[end_idx].split('"')[0]
+
+		    # Join everything between the quotes into one argument.
+		    temp = ' '.join(args[start_idx:end_idx + 1]) 
+
+		    # Remove the elements we just joined together
+		    # from the argument list.
+		    for arg in args[start_idx:end_idx + 1]:
+			args.remove(arg)
+
+		    # Insert the new, single string argument into the argument list.
+		    args.insert(start_idx, temp)
 
 	    else:
+		# Just return args
+		pass
 
-		return args
+	    return args
 

@@ -1,5 +1,3 @@
-from sys import exit
-
 import nltk
 
 
@@ -13,7 +11,7 @@ class Text(object):
 
 	self.title = ''
 
-	self.string = ''
+	self.contents = ''
 
 	self.words = {}
 
@@ -24,27 +22,33 @@ class Text(object):
 	self.members.append(self)
 
     
-    def throwError(self, error_message="Generic error"):
-
-	print error_message
-
-	return
-
-
     def set_id(self):
     
 	if self.members:
-	    return (self.members[(len(Text.members) - 1)].id) + 1
+	    return (self.members[(len(self.members) - 1)].id) + 1
 
 	else:
 	    return 1
 
 
-    def load_data(self, data):
+    def load_data(self, data_type, data):
+
+	if data_type == 'file':
+	    print "data_type is file"
+
+	    try:
+		with open(data, 'r') as f:
+		    data = f.read()
+
+	    except:
+		print "Could not read from file: %s." % data
+
+		return GO
+
 
 	self.title = data[:20]
 
-	self.string = data
+	self.contents = data
 
 	temp = nltk.word_tokenize(data)
 
@@ -62,16 +66,5 @@ class Text(object):
 	    else:
 		l.update({item: 1})
 
-	print "String loaded into id %d." % self.id
-
-
-    def overview(self):
-
-	print '"%s"' % self.title
-
-	if self.words:
-	    print "Distinct words: %d" % len(self.words)
-    
-	if self.numbers:
-	    print "Distinct numbers: %d" % len(self.numbers)
+	print "Data loaded into id %d." % self.id
 

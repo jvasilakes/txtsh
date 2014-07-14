@@ -46,7 +46,7 @@ class Shell(object):
 	    
     def run(self):
 
-	self.input_manager.manage('!info')
+	self.input_manager._exec('!info')
 
 	while self.state == GO:
 
@@ -54,7 +54,7 @@ class Shell(object):
 
 		self.cmd = raw_input()
 
-		self.state = self.input_manager.manage(self.cmd)
+		self.state = self.input_manager._exec(self.cmd)
 
 	while self.state == STOP:
 
