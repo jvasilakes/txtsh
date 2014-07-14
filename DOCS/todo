@@ -1,7 +1,0 @@
-Todo list for txtsh
-
-
-- figure out how to use Text objects in subshell
-
-- Catch exceptions, e.g. when !free is called with wrong arguments
-
