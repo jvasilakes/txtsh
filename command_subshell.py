@@ -1,4 +1,5 @@
 from header import *
+import pager
 
 
 def _drop(*args):
@@ -15,9 +16,17 @@ def _words(*args):
 	print "This text object contains no words."
 	return GO
 
-    print "\nDistinct words: %s" % str(sorted(text_object.words.keys()))
+    words = "--- DISTINCT WORDS ---\n\n%s" % str(sorted(text_object.words.keys()))
 
-    print "\nNumber of distinct words: %d\n" % len(text_object.words.keys())
+    num_words =  "\nNumber of distinct words: %d\n" % len(text_object.words.keys())
+
+    if len(sorted(text_object.words.keys())) > 300:
+	pager.page(words)
+
+    else:
+	print words
+
+    print num_words
 
     return GO
 

@@ -34,7 +34,7 @@ class Text(object):
     def load_data(self, data_type, data):
 
 	if data_type == 'file':
-	    print "data_type is file"
+	    print "Loading file..."
 
 	    try:
 		with open(data, 'r') as f:
