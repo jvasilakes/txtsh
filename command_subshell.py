@@ -1,5 +1,7 @@
-from header import *
 import pager
+
+from header import *
+from dict_methods import getMaxKey
 
 
 def _drop(*args):
@@ -9,31 +11,38 @@ def _drop(*args):
 
 def _words(*args):
 
-    args = args[0]
     text_object = args[0]
 
     if not text_object.words:
 	print "This text object contains no words."
 	return GO
 
-    words = "--- DISTINCT WORDS ---\n\n%s" % str(sorted(text_object.words.keys()))
+    print "\nNumber of distinct words: %d" % len(text_object.words.keys())
 
-    num_words =  "\nNumber of distinct words: %d\n" % len(text_object.words.keys())
+    (word, count) = getMaxKey(text_object.words)
+    print "\nMost common word: %s (%d occurrences)" % (word, count)
 
-    if len(sorted(text_object.words.keys())) > 300:
-	pager.page(words)
+    print "\nDisplay all distinct words? [y/n]: ",
+    ans = raw_input()
+
+    if ans.lower() == 'y':
+
+	words = "--- DISTINCT WORDS ---\n\n%s" % str(sorted(text_object.words.keys()))
+
+	if len(sorted(text_object.words.keys())) > 300:
+	    pager.page(words)
+
+	else:
+	    print words
 
     else:
-	print words
-
-    print num_words
+	pass
 
     return GO
 
 
 def _punct(*args):
 
-    args = args[0]
     text_object = args[0]
 
     if not text_object.punctuation:
@@ -49,7 +58,6 @@ def _punct(*args):
 
 def _nums(*args):
 
-    args = args[0]
     text_object = args[0]
 
     if not text_object.numbers:

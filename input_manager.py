@@ -36,7 +36,7 @@ class InputManager(object):
 	    status = cmd_set.map[args[0]]()
 
 	elif len(args) > 1:
-	    status = cmd_set.map[args[0]](args[1:])	
+	    status = cmd_set.map[args[0]](*args[1:])	
 
 	else:
 	    status = GO

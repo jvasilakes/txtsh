@@ -17,9 +17,13 @@ def _update(*args):
 
     os.chdir(TXTSH_HOME_DIR)
     p = subprocess.Popen(['git', 'pull', 'origin', 'master', '&'])
-    p.wait()
+    code = p.wait()
 
-    print "Update complete. Restart txtsh for changes to take effect."
+    if code == 0:
+	print "Update complete. Restart txtsh for changes to take effect."
+
+    else:
+	print "No update available."
 
     return GO
 
@@ -71,8 +75,6 @@ def _load(*args):
 
     """
     
-    args = args[0]
-
     data_type = args[0]
     data = args[1]
 
@@ -95,7 +97,6 @@ def _load(*args):
 
 def _free(*args):
 
-    args = args[0]
     id = int(args[0])
 
     object = None
@@ -132,7 +133,6 @@ def _list(*args):
 
 def _use(*args):
 
-    args = args[0]
     id = int(args[0])
 
     object = None
