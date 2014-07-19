@@ -1,31 +1,10 @@
-import os, subprocess
+import sys, os, subprocess
 
 import shell
 
 from header import *
 from text import Text
 
-
-def _quit(*args):
-
-    return STOP
-
-
-def _update(*args):
-
-    print "Updating txtsh..."
-
-    os.chdir(TXTSH_HOME_DIR)
-    p = subprocess.Popen(['git', 'pull', 'origin', 'master', '&'])
-    code = p.wait()
-
-    if code == 0:
-	print "Update complete. Restart txtsh for changes to take effect."
-
-    else:
-	print "No update available."
-
-    return GO
 
 
 def _help(*args):
@@ -152,16 +131,63 @@ def _use(*args):
     return GO
 
 
+def _quit(*args):
+
+    return STOP
+
+
+def _restart(*args):
+
+    ans = raw_input("Restart txtsh? All loaded objects will be freed! [y/n]: ")
+    if ans.lower().strip() == 'y':
+
+	print "\nRestarting...\n"
+
+	# Free up memory for any loaded objects
+	for i in reversed(range(len(Text.members))):
+	    _free(Text.members[i].id)
+
+	python = sys.executable
+
+	os.execl(python, python, * sys.argv)	
+
+    else:
+	return GO
+
+
+def _update(*args):
+
+    print "Updating txtsh..."
+
+    try:
+	os.chdir(TXTSH_HOME_DIR)
+	p = subprocess.Popen(['git', 'pull', 'origin', 'master'])
+	code = p.wait()
+
+	if code == 0:
+	    print "Update complete." 
+	    print "If changes were made, restart (!restart) txtsh for changes to take effect."
+
+	else:
+	    print "Update failed."
+
+    except:
+	print "Update command failed to execute."
+
+    return GO
+
+
 # ---- MAPPINGS -----
 
 map = {
-    '!quit': _quit,
-    '!update': _update,
     '!help': _help,
     '!info': _info,
     '!load': _load,
     '!free': _free,
     '!list': _list,
-    '!use': _use
+    '!use': _use,
+    '!quit': _quit,
+    '!restart': _restart,
+    '!update': _update
        }
 
