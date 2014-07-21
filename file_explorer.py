@@ -3,7 +3,16 @@ import curses
 
 
 ROOT = '/'
-scr = curses.initscr()
+HOMEDIR = '/home/jav/'
+
+KEY_QUIT = ord('q')
+KEY_CHOOSE_FILE = ord('c')
+
+# -- Status codes ---
+STOP = 0
+GO = 1
+CHOSEN = 2
+
 
 
 class Cursor(object):
@@ -17,7 +26,6 @@ class Cursor(object):
 	self.down_limit = 4
 
 
-
     def display(self):
 
 	curses.setsyx(self.y, self.x)
@@ -28,72 +36,95 @@ class Cursor(object):
 class Explorer(object):
 
     def __init__(self):
+	
+	self.scr = curses.initscr()
 
-	self.path = ROOT
+	curses.noecho()
+	curses.curs_set(1)
+	self.scr.keypad(1)
+
+	self.path = HOMEDIR
+
+	self.curs = Cursor()
 
 	self.ls = os.listdir(self.path)
 
 	self.num_listings = len(self.ls)
 
-	self.curs = Cursor()
-
-	self.curs.down_limit = self.num_listings + 2
+	self.curs.down_limit = self.num_listings + 3
 
 	self.current_file = self.ls[self.curs.y - 4]
 
 
-    def manage_input(self, direction):
+    def manage_input(self, key):
 
-	if direction == curses.KEY_UP:
+	if key == KEY_QUIT:
+	    return (STOP, None)
+    
+	elif key == KEY_CHOOSE_FILE:
+	    return (CHOSEN, self.path + self.current_file)
+
+	elif key == curses.KEY_UP:
 
 	    if self.curs.y == self.curs.up_limit:
-		return
+		pass
 
 	    else:
 		self.curs.y -= 1
 
-	elif direction == curses.KEY_DOWN:
+	elif key == curses.KEY_DOWN:
 
 	    if self.curs.y == self.curs.down_limit:
-		return
+		pass
 
 	    else:
 		self.curs.y += 1
 
-	elif direction == curses.KEY_RIGHT:
+	elif key == curses.KEY_RIGHT:
 
 	    self.build_path()
 
 	    self.curs.y = 4
 
-	elif direction == curses.KEY_LEFT:
+	elif key == curses.KEY_LEFT:
 
 	    self.shrink_path()
 
 	    self.curs.y = 4
 
 	else:
-	    return
+	    pass
+
+	return (GO, None)
 
 
     def list_dir(self):
 
-	self.ls = os.listdir(self.path)
+	max_y = self.scr.getmaxyx()[0] - 5
+
+	try:
+	    self.ls = os.listdir(self.path)
+
+	except:
+	    return
+
 	self.num_listings = len(self.ls)
 
 	if self.num_listings == 0:
 
-	    scr.addstr(4, 0, '*EMPTY*')
+	    self.scr.addstr(4, 0, '*EMPTY*')
 
 	else:
 
-	    scr.addstr(2, 0, self.path)
+	    self.scr.addstr(2, 0, self.path)
 
-	    for i in xrange(len(self.ls) - 1):
+	    for i in xrange(len(self.ls)):
+		if i < max_y:
 
-		scr.addstr(i + 4, 0, self.ls[i])
+		    self.scr.addstr(i + 4, 0, self.ls[i])
+		    self.scr.refresh()
 
-	    scr.refresh()
+	    self.curs.down_limit = self.num_listings + 3
 
 
     def build_path(self):
@@ -111,13 +142,16 @@ class Explorer(object):
 
 
     def navigate(self):
+	
+	status = GO
 
 	c = None
-	while c != ord('q'):
+	while status == GO:
 
-	    scr.clear()
+	    self.scr.clear()
 
-	    scr.addstr(0, 0, "TXTSH FILE EXPLORER")
+	    self.scr.addstr(0, 0, "TXTSH FILE EXPLORER")
+	    self.scr.addstr(1, 0, "'c' to choose file, 'q' to quit without choosing.")
 
 	    self.list_dir()
 
@@ -125,28 +159,18 @@ class Explorer(object):
 
 	    self.current_file = self.ls[self.curs.y - 4]
 
-	    c = scr.getch()
+	    c = self.scr.getch()
 
-	    self.manage_input(c)
-
+	    (status, path) = self.manage_input(c)
 
 	curses.endwin()
 
-
-def main():
-
-    curses.noecho()
-    curses.curs_set(1)
-    scr.keypad(1)
-
-
-    expl = Explorer()
-
-    path = expl.navigate()
-
-    print path
+	return path
 
 
 if __name__ == '__main__':
-    main()
+    expl = Explorer()
+    path = expl.navigate()
+    if path:
+	print path
 

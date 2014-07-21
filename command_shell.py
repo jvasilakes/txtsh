@@ -1,6 +1,7 @@
 import sys, os, subprocess
 
 import shell
+import file_explorer
 
 from header import *
 from text import Text
@@ -52,14 +53,35 @@ def _load(*args):
     open the data as a read-only text file and
     load its contents into a new Text object.
 
+    A file explorer will launch if file data is not provided.
+
     """
     
+    if len(args) < 1:
+	print "Error: load takes at least one argument."
+	return GO
+
     data_type = args[0]
-    data = args[1]
 
     if data_type != 'string' and data_type != 'file':
 	print "Error: you must specify 'string' or 'file'"
 	return GO
+
+    if len(args) != 2 and data_type == 'string':
+	print "Error: you must provide a single string to load."
+	return GO
+
+    if len(args) == 1 and data_type == 'file':
+	explorer = file_explorer.Explorer()
+	data = explorer.navigate()
+
+	if data is None:
+	    print "Error: must provide a data file to load."
+	    return GO
+
+    else:
+	data = args[1]
+	
 
     new = Text()    
 
