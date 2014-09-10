@@ -155,6 +155,10 @@ def _use(*args):
 
 def _quit(*args):
 
+    # Cleanup memory for any loaded objects
+    for i in reversed(range(len(Text.members))):
+	_free(Text.members[i].id)
+
     return STOP
 
 
@@ -165,7 +169,7 @@ def _restart(*args):
 
 	print "\nRestarting...\n"
 
-	# Free up memory for any loaded objects
+	# Cleanup memory for any loaded objects
 	for i in reversed(range(len(Text.members))):
 	    _free(Text.members[i].id)
 

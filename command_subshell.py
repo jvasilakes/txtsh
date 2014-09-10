@@ -1,3 +1,5 @@
+import subprocess
+
 import pager
 
 from header import *
@@ -70,11 +72,29 @@ def _nums(*args):
 
     return GO
 
+
+def _hist(*args):
+
+    text_object = args[0]
+
+    if not text_object.contents:
+	print "Could not read contents of text object."
+	return GO
+
+    if text_object.filepath is not None:
+	subprocess.call(['hist', text_object.filepath])
+
+    else:
+	subprocess.call(['hist', text_object.contents])
+
+    return GO
     
+
 map = {
     '!drop': _drop,
     '!words': _words,
     '!punct': _punct,
-    '!nums': _nums
+    '!nums': _nums,
+    '!hist': _hist
       }
 

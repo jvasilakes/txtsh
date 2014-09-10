@@ -7,6 +7,8 @@ class Text(object):
 
     def __init__(self):
 
+	self.filepath = None
+
 	self.id = self.set_id()
 
 	self.title = ''
@@ -33,9 +35,9 @@ class Text(object):
 
     def load_data(self, data_type, data):
 
-	print "Loading %s" % data_type
-
 	if data_type == 'file':
+
+	    self.filepath = data
 
 	    try:
 		with open(data, 'r') as f:

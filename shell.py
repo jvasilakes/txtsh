@@ -18,6 +18,8 @@ class Shell(object):
 
 	self.addToMembers()
 
+	self.input_manager._exec('!info')
+
 
     # Returns shell's type as a string. Used within _exec()
     @property
@@ -46,21 +48,27 @@ class Shell(object):
 	    
     def run(self):
 
-	self.input_manager._exec('!info')
+	try:
+	    while self.state == GO:
 
-	while self.state == GO:
+		    print self.PROMPT,
 
-		print self.PROMPT,
+		    self.cmd = raw_input()
 
-		self.cmd = raw_input()
+		    self.state = self.input_manager._exec(self.cmd)
 
-		self.state = self.input_manager._exec(self.cmd)
+	    while self.state == STOP:
 
-	while self.state == STOP:
+		    print "Thx 4 using txtsh!!!"
 
-		print "Thx 4 using txtsh!!!"
+		    break
 
-		break
+	except KeyboardInterrupt:
+	    return
+
+	except Exception as e:
+	    print "The following error occurred:\r", e
+	    self.run()
 
 
 class Subshell(Shell):
