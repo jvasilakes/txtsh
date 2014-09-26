@@ -16,9 +16,12 @@ class Shell(object):
 
         self.cmd = None
 
-        self.addToMembers()
+        # If this is the first shell spawned upon
+        # starting the program.
+        if not self.members:
+            self.input_manager._exec('!info')
 
-        self.input_manager._exec('!info')
+        self.addToMembers()
 
     # Returns shell's type as a string. Used within _exec()
     @property
