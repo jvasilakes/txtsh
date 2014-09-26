@@ -1,11 +1,12 @@
-import sys, os, subprocess
+import sys
+import os
+import subprocess
 
 import shell
 import file_explorer
 
 from header import *
 from text import Text
-
 
 
 def _help(*args):
@@ -17,7 +18,8 @@ def _help(*args):
     print "!quit: quit the shell."
     print "!info: display version information."
     print "!update: update txtsh to the latest version."
-    print "!load DATA_TYPE, DATA: load DATA into database. DATA_TYPE must be 'string' or 'file'."
+    print "!load DATA_TYPE, DATA: load DATA into database. \
+            DATA_TYPE must be 'string' or 'file'."
     print "!free ID: unload text object stored in ID."
     print "!use ID: go to subshell to manipulate text data stored in ID."
     print "!list: print all loaded objects."
@@ -26,7 +28,7 @@ def _help(*args):
     print "!drop: Drop out of subshell created by '!use'."
     print "!words: Display word data for loaded text."
     print "!punct: Display punctuation data for loaded text."
-    print "!nums: Display number data for loaded text." 
+    print "!nums: Display number data for loaded text."
 
     print "\r"
 
@@ -39,7 +41,7 @@ def _info(*args):
     print "Type '!help' for a list of commands."
 
     return GO
-    
+
 
 def _load(*args):
 
@@ -58,42 +60,41 @@ def _load(*args):
     """
     
     if len(args) < 1:
-	print "Error: load takes at least one argument."
-	return GO
+        print "Error: load takes at least one argument."
+        return GO
 
     data_type = args[0]
 
     if data_type != 'string' and data_type != 'file':
-	print "Error: you must specify 'string' or 'file'"
-	return GO
+        print "Error: you must specify 'string' or 'file'"
+        return GO
 
     if len(args) != 2 and data_type == 'string':
-	print "Error: you must provide a single string to load."
-	return GO
+        print "Error: you must provide a single string to load."
+        return GO
 
     if len(args) == 1 and data_type == 'file':
-	explorer = file_explorer.Explorer()
-	data = explorer.navigate()
+        explorer = file_explorer.Explorer()
+        data = explorer.navigate()
 
-	if data is None:
-	    print "Error: must provide a data file to load."
-	    return GO
+        if data is None:
+            print "Error: must provide a data file to load."
+            return GO
 
     else:
-	data = args[1]
-	
-
-    new = Text()    
+        data = args[1]
+        
+    new = Text()
 
     try:
-	new.load_data(data_type, data)
+        new.load_data(data_type, data)
 
-	return GO
+        return GO
 
     except:
-	print "Loading text data failed."
+        print "Loading text data failed."
 
-	return GO
+        return GO
 
 
 def _free(*args):
@@ -103,13 +104,13 @@ def _free(*args):
     object = None
 
     for member in Text.members:
-	if member.id == id:
+        if member.id == id:
 
-	    object = member 
+            object = member
 
     if not object:
-	print "No object found with id '%d'." % id
-	return GO
+        print "No object found with id '%d'." % id
+        return GO
 
     Text.members.remove(object)
 
@@ -119,15 +120,15 @@ def _free(*args):
 def _list(*args):
 
     if len(Text.members) == 0:
-	print "No objects loaded."
+        print "No objects loaded."
     
     else:
-	print "ID\tSAMPLE\n"
+        print "ID\tSAMPLE\n"
 
-	for member in Text.members:
-	    print '%2s' % member.id,
-	    print '\t',
-	    print '"%s"' % member.title
+        for member in Text.members:
+            print '%2s' % member.id,
+            print '\t',
+            print '"%s"' % member.title
 
     return GO
 
@@ -139,13 +140,13 @@ def _use(*args):
     object = None
 
     for member in Text.members:
-	if member.id == id:
+        if member.id == id:
 
-	    object = member 
+            object = member
 
     if not object:
-	print "No object found with id '%d'." % id
-	return GO
+        print "No object found with id '%d'." % id
+        return GO
 
     subsh = shell.Subshell(object)
     subsh.run()
@@ -157,7 +158,7 @@ def _quit(*args):
 
     # Cleanup memory for any loaded objects
     for i in reversed(range(len(Text.members))):
-	_free(Text.members[i].id)
+        _free(Text.members[i].id)
 
     return STOP
 
@@ -167,18 +168,18 @@ def _restart(*args):
     ans = raw_input("Restart txtsh? All loaded objects will be freed! [y/n]: ")
     if ans.lower().strip() == 'y':
 
-	print "\nRestarting...\n"
+        print "\nRestarting...\n"
 
-	# Cleanup memory for any loaded objects
-	for i in reversed(range(len(Text.members))):
-	    _free(Text.members[i].id)
+        # Cleanup memory for any loaded objects
+        for i in reversed(range(len(Text.members))):
+            _free(Text.members[i].id)
 
-	python = sys.executable
+        python = sys.executable
 
-	os.execl(python, python, * sys.argv)	
+        os.execl(python, python, * sys.argv)
 
     else:
-	return GO
+        return GO
 
 
 def _update(*args):
@@ -186,19 +187,20 @@ def _update(*args):
     print "Updating txtsh..."
 
     try:
-	os.chdir(TXTSH_HOME_DIR)
-	p = subprocess.Popen(['git', 'pull', 'origin', 'master'])
-	code = p.wait()
+        os.chdir(TXTSH_HOME_DIR)
+        p = subprocess.Popen(['git', 'pull', 'origin', 'master'])
+        code = p.wait()
 
-	if code == 0:
-	    print "Update complete." 
-	    print "If changes were made, restart (!restart) txtsh for changes to take effect."
+        if code == 0:
+            print "Update complete."
+            print "If changes were made, restart \
+                    (!restart) txtsh for changes to take effect."
 
-	else:
-	    print "Update failed."
+        else:
+            print "Update failed."
 
     except:
-	print "Update command failed to execute."
+        print "Update command failed to execute."
 
     return GO
 
@@ -216,4 +218,3 @@ map = {
     '!restart': _restart,
     '!update': _update
        }
-
