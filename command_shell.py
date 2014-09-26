@@ -19,7 +19,7 @@ def _help(*args):
     print "!info: display version information."
     print "!update: update txtsh to the latest version."
     print "!load DATA_TYPE, DATA: load DATA into database. \
-            DATA_TYPE must be 'string' or 'file'."
+DATA_TYPE must be 'string' or 'file'."
     print "!free ID: unload text object stored in ID."
     print "!use ID: go to subshell to manipulate text data stored in ID."
     print "!list: print all loaded objects."
@@ -58,7 +58,7 @@ def _load(*args):
     A file explorer will launch if file data is not provided.
 
     """
-    
+
     if len(args) < 1:
         print "Error: load takes at least one argument."
         return GO
@@ -83,7 +83,7 @@ def _load(*args):
 
     else:
         data = args[1]
-        
+
     new = Text()
 
     try:
@@ -121,7 +121,7 @@ def _list(*args):
 
     if len(Text.members) == 0:
         print "No objects loaded."
-    
+
     else:
         print "ID\tSAMPLE\n"
 
