@@ -1,17 +1,16 @@
 #! /usr/bin/python2
 
-from header import *
+# from header import *
 from shell import Shell
 
 
 def main():
 
-	sh = Shell()
-	sh.run()
+        sh = Shell()
+        sh.run()
 
-	return
+        return
 
 
 if __name__ == '__main__':
-	main()
-
+        main()
