@@ -8,91 +8,86 @@ class Shell(object):
 
     def __init__(self):
 
-	self.PROMPT = 'TXTSH>'
+        self.PROMPT = 'TXTSH>'
 
-	self.input_manager = InputManager(self)
+        self.input_manager = InputManager(self)
 
-	self.state = GO
+        self.state = GO
 
-	self.cmd = None
+        self.cmd = None
 
-	self.addToMembers()
+        self.addToMembers()
 
-	self.input_manager._exec('!info')
-
+        self.input_manager._exec('!info')
 
     # Returns shell's type as a string. Used within _exec()
     @property
     def getType(self):
 
-	temp = str(type(self))
+        temp = str(type(self))
 
-	return temp.rsplit('.')[-1][:-2]
+        return temp.rsplit('.')[-1][:-2]
 
-	
     def addToMembers(self):
 
-	if not isinstance(self, Subshell):
-	    for shell in self.members:
-		if not isinstance(shell, Subshell):
+        if not isinstance(self, Subshell):
+            for shell in self.members:
+                if not isinstance(shell, Subshell):
 
-		    try:
-			raise Exception("Only one main shell allowed.")
+                    try:
+                        raise Exception("Only one main shell allowed.")
 
-		    except:
-			return		
+                    except:
+                        return
 
-	self.members.append(self)
+        self.members.append(self)
 
-	
-	    
     def run(self):
 
-	try:
-	    while self.state == GO:
+        try:
+            while self.state == GO:
 
-		    print self.PROMPT,
+                    print self.PROMPT,
 
-		    self.cmd = raw_input()
+                    self.cmd = raw_input()
 
-		    self.state = self.input_manager._exec(self.cmd)
+                    self.state = self.input_manager._exec(self.cmd)
 
-	    while self.state == STOP:
+            while self.state == STOP:
 
-		    print "Thx 4 using txtsh!!!"
+                    print "Thx 4 using txtsh!!!"
 
-		    break
+                    break
 
-	except KeyboardInterrupt:
-	    return
+        except KeyboardInterrupt:
+            return
 
-	except Exception as e:
-	    print "The following error occurred:\r", e
-	    self.run()
+        except Exception as e:
+            print "The following error occurred:\r", e
+            self.run()
 
 
 class Subshell(Shell):
 
     def __init__(self, data_object):
 
-	Shell.__init__(self)
+        Shell.__init__(self)
 
-	self.data = data_object
+        self.data = data_object
 
-	self.PROMPT = 'ID: %d>' % self.data.id
+        self.PROMPT = 'ID: %d>' % self.data.id
 
-    
     def run(self):
 
-	while self.state == GO:
+        while self.state == GO:
 
-		print self.PROMPT,
+                print self.PROMPT,
 
-		self.cmd = raw_input()
+                self.cmd = raw_input()
 
-		self.state = self.input_manager._exec(
-						    self.cmd,
-						    data_object=self.data
-						     )
+                self.state = self.input_manager._exec(
+                                                    self.cmd,
+                                                    data_object=self.data
+                                                     )
 
-	del self
+        del self
