@@ -1,4 +1,5 @@
-import subprocess, tempfile
+import subprocess
+import tempfile
 
 
 def page(*args):
@@ -8,4 +9,3 @@ def page(*args):
     tmp_file.write(*args)
 
     subprocess.call(['less', tmp_file.name])
-
