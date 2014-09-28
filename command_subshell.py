@@ -36,7 +36,7 @@ def _words(*args):
             pager.page(words)
 
         else:
-            print words
+            print words + '\n'
 
     else:
         pass

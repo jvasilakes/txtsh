@@ -1,4 +1,5 @@
 import time
+import subprocess
 
 
 class Log(object):
@@ -23,15 +24,27 @@ class Log(object):
 
         self.filename = ".log"
 
-        self.timestamp = self.getTimestamp()
+        self.timestamp = None
 
     def getTimestamp(self):
 
-        self.timestamp = '[' + time.strftime("%H:%M:%S") + ']'
+        self.timestamp = '[' + time.strftime("%H:%M:%S") + '] '
 
-    def writeLog(self, string):
+    def write(self, string):
 
         self.getTimestamp()
 
         with open(self.filename, 'a') as log:
             log.write(self.timestamp + string + '\n')
+
+    def view(self):
+
+        try:
+            subprocess.call(['less', self.filename])
+        except Exception as e:
+            print e
+            return
+
+
+def write(string):
+    return Log.get().write(string)

@@ -7,6 +7,7 @@ import file_explorer
 
 from header import *
 from text import Text
+from log import Log
 
 
 def _help(*args):
@@ -40,6 +41,12 @@ def _info(*args):
     print "TXTSH Text Analysis Shell (ver. 0.0) on %s." % PLATFORM
     print "Type '!help' for a list of commands."
 
+    return GO
+
+
+def _log(*args):
+
+    Log.get().view()
     return GO
 
 
@@ -210,6 +217,7 @@ def _update(*args):
 map = {
     '!help': _help,
     '!info': _info,
+    '!log': _log,
     '!load': _load,
     '!free': _free,
     '!list': _list,

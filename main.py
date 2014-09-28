@@ -1,10 +1,13 @@
 #! /usr/bin/python2
 
-# from header import *
+import log
+
 from shell import Shell
 
 
 def main():
+
+        log.write("Txtsh started.")
 
         sh = Shell()
         sh.run()

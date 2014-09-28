@@ -1,13 +1,13 @@
 import sys
 
-from log import Log
+import log
 
 try:
     import nltk
-    Log.get().writeLog("nltk successfully imported.")
+    log.write("nltk successfully imported.")
 
 except Exception as e:
-    Log.get().writeLog(e)
+    log.write(e)
     print e
     sys.exit(0)
 
