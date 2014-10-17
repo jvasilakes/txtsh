@@ -1,9 +1,14 @@
+#! /usr/bin/env python2
+
+
 import os
+import sys
 import curses
+import log
 
 
 ROOT = '/'
-HOMEDIR = '/home/jav/'
+HOMEDIR = os.path.expanduser("~")
 
 KEY_QUIT = ord('q')
 KEY_CHOOSE_FILE = ord('c')
@@ -33,18 +38,21 @@ class Explorer(object):
 
     def __init__(self):
 
-        self.scr = curses.initscr()
-
-        curses.noecho()
-        curses.curs_set(1)
-        self.scr.keypad(1)
-
-        self.path = HOMEDIR
+        self.path = HOMEDIR + '/'
         self.curs = Cursor()
         self.ls = os.listdir(self.path)
         self.num_listings = len(self.ls)
         self.curs.down_limit = self.num_listings + 3
         self.current_file = self.ls[self.curs.y - 4]
+
+        self.create_scr()
+
+    def create_scr(self):
+
+        self.scr = curses.initscr()
+        curses.noecho()
+        curses.curs_set(1)
+        self.scr.keypad(1)
 
     def manage_input(self, key):
 
@@ -83,16 +91,16 @@ class Explorer(object):
 
     def list_dir(self):
 
+        log.write("In list_dir")
+
         max_y = self.scr.getmaxyx()[0] - 5
 
         try:
             self.ls = os.listdir(self.path)
+            self.ls = [f for f in self.ls if not f.startswith('.')]
 
-            for i in xrange(len(self.ls)):
-                if self.ls[i].startswith('.'):
-                    self.ls.pop(i)
-
-        except:
+        except Exception as e:
+            log.write(str(e))
             return
 
         self.num_listings = len(self.ls)
