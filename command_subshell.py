@@ -11,6 +11,13 @@ def _drop(*args):
     return STOP
 
 
+def _print(*args):
+
+    text_object = args[0]
+    pager.page(text_object.contents)
+
+    return GO
+
 def _words(*args):
 
     text_object = args[0]
@@ -95,6 +102,7 @@ def _hist(*args):
 
 map = {
     '!drop': _drop,
+    '!print': _print,
     '!words': _words,
     '!punct': _punct,
     '!nums': _nums,
