@@ -71,13 +71,10 @@ class InputManager(object):
         args = input.split(None, 1)
 
         if args[0].startswith('!'):
-
             if args[0] in commands.map.keys():
-
                 return True
-
             else:
-                print "'%s' is not a valid command." % args[0]
+                print "'{}' is not a valid command." .format(args[0])
                 return False
 
         else:
