@@ -1,5 +1,4 @@
 import sys
-
 import log
 
 try:
@@ -8,8 +7,7 @@ try:
 
 except Exception as e:
     log.write(e)
-    print e
-    sys.exit(0)
+    raise e
 
 
 class Text(object):
@@ -31,7 +29,6 @@ class Text(object):
 
         if self.members:
             return (self.members[(len(self.members) - 1)].id) + 1
-
         else:
             return 1
 
@@ -45,7 +42,7 @@ class Text(object):
                     data = f.read()
 
             except:
-                print "Could not read from file: %s." % data
+                print "Could not read from file: {}." .format(data)
                 return GO
 
         self.title = data[:20]
@@ -66,4 +63,4 @@ class Text(object):
             else:
                 l.update({item: 1})
 
-        print "Data loaded into id %d." % self.id
+        print "Data loaded into id {}." .format(self.id)
