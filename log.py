@@ -22,7 +22,7 @@ class Log(object):
 
     def __init__(self):
 
-        self.filename = ".log"
+        self.filename = ".txtsh_log"
 
         self.timestamp = None
 
@@ -42,8 +42,13 @@ class Log(object):
         try:
             subprocess.call(['less', self.filename])
         except Exception as e:
-            print e
+            self.write(str(e))
             return
+
+    def clear(self):
+        
+        open(self.filename, 'w').close()
+        print "Logfile cleared."
 
 
 def write(string):
