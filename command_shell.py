@@ -15,9 +15,10 @@ def _help(*args):
     print "\r"
 
     print "--- Main shell commands ---"
+    print "!info: display version information."
+    print "!log: display contents of log file."
     print "!help: display this help screen."
     print "!quit: quit the shell."
-    print "!info: display version information."
     print "!update: update txtsh to the latest version."
     print "!load DATA_TYPE, DATA: load DATA into database. \
 DATA_TYPE must be 'string' or 'file'."
@@ -27,9 +28,11 @@ DATA_TYPE must be 'string' or 'file'."
 
     print "\n--- Subshell commands ---"
     print "!drop: Drop out of subshell created by '!use'."
+    print "!print: Display loaded text."
     print "!words: Display word data for loaded text."
     print "!punct: Display punctuation data for loaded text."
     print "!nums: Display number data for loaded text."
+    print "!hist: Histogram of word lengths in file."
 
     print "\r"
 
@@ -46,7 +49,15 @@ def _info(*args):
 
 def _log(*args):
 
-    Log.get().view()
+    if len(args) > 0:
+        if args[0] == 'clear':
+            Log.get().clear()
+        else:
+            print "Unknown command to log: '{}'" .format(args[0])
+
+    else:
+        Log.get().view()
+
     return GO
 
 
