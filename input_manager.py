@@ -46,13 +46,6 @@ class InputManager(object):
 
         sh_type = self.shell.getType
 
-        # Python does this for us!
-        # Use cached import if available
-        # if sh_type in self.cmd_set_cache:
-        #    return self.cmd_set_cache[sh_type]
-
-        #else:
-
         if sh_type == 'Shell':
             cmds = import_module('command_shell')
 
