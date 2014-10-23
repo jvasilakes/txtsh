@@ -76,7 +76,10 @@ class Subshell(Shell):
 
         Shell.__init__(self)
 
-        self.data = data_object
+        if not data_object:
+            print "No data_object specified."
+        else:
+            self.data = data_object
 
         self.PROMPT = 'ID: %d>' % self.data.id
 
