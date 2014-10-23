@@ -16,10 +16,10 @@ class InputManager(object):
 
     def _exec(self, input, data_object=None):
 
-        input = input.strip()
-
         if not input:
             return GO
+
+        input = input.strip().lower()
 
         cmd_set = self.import_cmd_set()
 
@@ -46,25 +46,26 @@ class InputManager(object):
 
         sh_type = self.shell.getType
 
+        # Python does this for us!
         # Use cached import if available
-        if sh_type in self.cmd_set_cache:
-            return self.cmd_set_cache[sh_type]
+        # if sh_type in self.cmd_set_cache:
+        #    return self.cmd_set_cache[sh_type]
+
+        #else:
+
+        if sh_type == 'Shell':
+            cmds = import_module('command_shell')
+
+        elif sh_type == 'Subshell':
+            cmds = import_module('command_subshell')
 
         else:
+            print "Error: Invalid shell!"
+            return
 
-            if sh_type == 'Shell':
-                cmds = import_module('command_shell')
+        self.cmd_set_cache.update({sh_type: cmds})
 
-            elif sh_type == 'Subshell':
-                cmds = import_module('command_subshell')
-
-            else:
-                print "Error: Invalid shell!"
-                return
-
-            self.cmd_set_cache.update({sh_type: cmds})
-
-            return cmds
+        return cmds
 
     def is_command(self, input, commands):
 
