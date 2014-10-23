@@ -1,6 +1,6 @@
 from read_file import read_file
 from preprocess_line import preprocess_line
-from count_trigrams import count_trigrams
+from count_ngrams import count_ngrams
 from gt_discount import gt_discount
 from estimate_probs import estimate_probs
 from calc_perplexity import calc_perplexity
@@ -27,7 +27,7 @@ class Model(object):
 
         self.train_file_str = read_file(training_data_file)
         self.train_pfs = preprocess_line(self.train_file_str)
-        self.train_counts = count_trigrams(3, self.train_pfs)
+        self.train_counts = count_ngrams(3, self.train_pfs)
 
         self.train_discounts = gt_discount(self.train_counts)
         self.train_probs = estimate_probs(self.train_discounts)
@@ -38,7 +38,7 @@ class Model(object):
 
         self.test_file_str = read_file(test_data_file)
         self.test_pfs = preprocess_line(self.test_file_str)
-        self.test_counts = count_trigrams(3, self.test_pfs)
+        self.test_counts = count_ngrams(3, self.test_pfs)
         self.perplexity = calc_perplexity(self.test_counts, self.train_probs)
 
     def relations(self):
