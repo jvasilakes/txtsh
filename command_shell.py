@@ -4,10 +4,10 @@ import subprocess
 
 import shell
 import file_explorer
+import log
 
 from header import *
 from text import Text
-from log import Log
 
 
 def _help(*args):
@@ -49,12 +49,12 @@ def _log(*args):
 
     if len(args) > 0:
         if args[0] == 'clear':
-            Log.get().clear()
+            log.clear()
         else:
             print "Unknown command to log: '{}'" .format(args[0])
 
     else:
-        Log.get().view()
+        log.view()
 
     return GO
 
@@ -107,7 +107,8 @@ def _load(*args):
 
         return GO
 
-    except:
+    except Exception as e:
+        log.write(str(e), error=True)
         print "Loading text data failed."
 
         return GO

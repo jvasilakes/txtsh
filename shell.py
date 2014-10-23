@@ -66,7 +66,7 @@ class Shell(object):
             return
 
         except Exception as e:
-            print "The following error occurred:\r", e
+            print "The following error occurred: {}" .format(e)
             self.run()
 
 

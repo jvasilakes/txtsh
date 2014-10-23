@@ -28,17 +28,21 @@ class Log(object):
 
     def getTimestamp(self):
 
-        self.timestamp = '[' + time.strftime("%H:%M:%S") + '] '
+         return "[{0}]" .format(time.strftime("%H:%M:%S"))
 
-    def write(self, string):
+    def write(self, string, error=None):
 
         if type(string) != str:
-            str(string)
-
-        self.getTimestamp()
+            string = str(string)
 
         with open(self.filename, 'a') as log:
-            log.write(self.timestamp + string + '\n')
+            if error:
+                log.write("{0} ERROR: {1} \n" \
+                          .format(self.getTimestamp(), \
+                          string)
+                         )
+            else:
+                log.write("{0} {1} \n" .format(self.getTimestamp(), string))
 
     def view(self):
 
@@ -54,5 +58,11 @@ class Log(object):
         print "Logfile cleared."
 
 
-def write(string):
-    return Log.get().write(string)
+def write(string, error=None):
+    return Log.get().write(string, error)
+
+def view():
+    return Log.get().view()
+
+def clear():
+    return Log.get().clear()

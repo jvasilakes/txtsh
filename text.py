@@ -2,11 +2,11 @@ import sys
 import log
 
 try:
-    import nltk
+    from nltk import word_tokenize
     log.write("nltk successfully imported.")
 
 except Exception as e:
-    log.write(e)
+    log.write(e, True)
     raise e
 
 
@@ -47,7 +47,7 @@ class Text(object):
 
         self.title = data[:20]
         self.contents = data
-        temp = nltk.word_tokenize(data)
+        temp = word_tokenize(data)
 
         for item in temp:
 

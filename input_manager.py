@@ -1,6 +1,6 @@
 import inspect
 
-from importlib import import_module
+#from importlib import import_module
 
 from header import *
 
@@ -47,10 +47,12 @@ class InputManager(object):
         sh_type = self.shell.getType
 
         if sh_type == 'Shell':
-            cmds = import_module('command_shell')
+            cmds = __import__('command_shell')
+            cmds = __import__('command_shell')
 
         elif sh_type == 'Subshell':
-            cmds = import_module('command_subshell')
+            cmds = __import__('command_subshell')
+            cmds = __import__('command_subshell')
 
         else:
             print "Error: Invalid shell!"
