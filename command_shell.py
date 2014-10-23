@@ -13,7 +13,6 @@ from log import Log
 def _help(*args):
 
     print "\r"
-
     print "--- Main shell commands ---"
     print "!info: display version information."
     print "!log: display contents of log file."
@@ -33,7 +32,6 @@ DATA_TYPE must be 'string' or 'file'."
     print "!punct: Display punctuation data for loaded text."
     print "!nums: Display number data for loaded text."
     print "!hist: Histogram of word lengths in file."
-
     print "\r"
 
     return GO
@@ -153,7 +151,11 @@ def _list(*args):
 
 def _use(*args):
 
-    id = int(args[0])
+    try:
+        id = int(args[0])
+    except:
+        print "Error: must specify an ID number."
+        return GO
 
     object = None
 
