@@ -32,6 +32,9 @@ class Log(object):
 
     def write(self, string):
 
+        if type(string) != str:
+            str(string)
+
         self.getTimestamp()
 
         with open(self.filename, 'a') as log:
