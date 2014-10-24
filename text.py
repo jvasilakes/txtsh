@@ -6,7 +6,7 @@ try:
     log.write("nltk successfully imported.")
 
 except Exception as e:
-    log.write(e, True)
+    log.write(e, error=True)
     raise e
 
 
