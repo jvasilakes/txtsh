@@ -14,7 +14,11 @@ def _drop(*args):
 def _print(*args):
 
     text_object = args[0]
-    pager.page(text_object.contents)
+
+    if len(sorted(text_object.words.keys())) > 300:
+        pager.page(text_object.contents)
+    else:
+        print text_object.contents
 
     return GO
 
