@@ -1,13 +1,10 @@
-#! /usr/bin/env python2
-
-
 import os
 import sys
 import curses
 import log
 
 
-ROOT = '/'
+ROOTDIR = '/'
 HOMEDIR = os.path.expanduser("~")
 
 KEY_QUIT = ord('q')
@@ -63,10 +60,8 @@ class Explorer(object):
             return (CHOSEN, self.path + self.current_file)
 
         elif key == curses.KEY_UP:
-
             if self.curs.y == self.curs.up_limit:
                 pass
-
             else:
                 self.curs.y -= 1
 
