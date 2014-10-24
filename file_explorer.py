@@ -86,8 +86,6 @@ class Explorer(object):
 
     def list_dir(self):
 
-        log.write("In list_dir")
-
         max_y = self.scr.getmaxyx()[0] - 5
 
         try:
