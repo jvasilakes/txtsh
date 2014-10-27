@@ -1,13 +1,7 @@
 import sys
+import re
+
 import log
-
-try:
-    from nltk import word_tokenize
-    log.write("nltk successfully imported.")
-
-except Exception as e:
-    log.write(e, error=True)
-    raise e
 
 
 class Text(object):
@@ -45,9 +39,10 @@ class Text(object):
                 print "Could not read from file: {}." .format(data)
                 return GO
 
-        self.title = data[:20]
+        # Get rid of unwanted newlines in the title.
+        self.title = re.sub(r'\s+', ' ', data[:20])
         self.contents = data
-        temp = word_tokenize(data)
+        temp = re.findall(r'[^\'\w+\s+]|\'?\w+', data)
 
         for item in temp:
 
