@@ -62,8 +62,16 @@ class Shell(object):
 
                     break
 
+        # Ctrl+C
         except KeyboardInterrupt:
+            ans = raw_input(" Quit txtsh? [y/n]: ")
+            ans.lower() != 'y' and self.run()
             return
+
+        # Ctrl+D
+        except EOFError:
+            print ""
+            self.run()
 
         except Exception as e:
             print "The following error occurred: {}" .format(e)
