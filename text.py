@@ -38,12 +38,16 @@ class Text(object):
 
         # Get rid of unwanted newlines in the title.
         self.title = re.sub(r'\s+', ' ', data[:20])
+        # Save the unadulterated data.
         self.contents = data
+        # Tokenize the data, separating contractions such as "I'm"
+        # into "I" and "'m", and separating punctuation.
         temp = re.findall(r'[^\'\w+\s+]|\'?\w+', data)
 
         for item in temp:
 
-            if item[0].isalpha():
+            # If there's an alphabetic character, it's probably a word.
+            if re.search(r'[a-zA-Z]', item):
                 l = self.words
             elif item.isdigit():
                 l = self.numbers
