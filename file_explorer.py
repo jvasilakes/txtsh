@@ -9,6 +9,10 @@ HOMEDIR = os.path.expanduser("~")
 
 KEY_QUIT = ord('q')
 KEY_CHOOSE_FILE = ord('c')
+KEY_UP = [curses.KEY_UP, ord('k')]
+KEY_DOWN = [curses.KEY_DOWN, ord('j')]
+KEY_LEFT = [curses.KEY_LEFT, ord('h')]
+KEY_RIGHT = [curses.KEY_LEFT, ord('l')]
 
 # -- Status codes ---
 STOP = 0
@@ -59,23 +63,23 @@ class Explorer(object):
         elif key == KEY_CHOOSE_FILE:
             return (CHOSEN, self.path + self.current_file)
 
-        elif key == curses.KEY_UP:
+        elif key in KEY_UP:
             if self.curs.y == self.curs.up_limit:
                 pass
             else:
                 self.curs.y -= 1
 
-        elif key == curses.KEY_DOWN:
+        elif key in KEY_DOWN:
             if self.curs.y == self.curs.down_limit:
                 pass
             else:
                 self.curs.y += 1
 
-        elif key == curses.KEY_RIGHT:
+        elif key in KEY_RIGHT:
             self.build_path()
             self.curs.y = 4
 
-        elif key == curses.KEY_LEFT:
+        elif key in KEY_LEFT:
             self.shrink_path()
             self.curs.y = 4
 
@@ -92,8 +96,8 @@ class Explorer(object):
             self.ls = os.listdir(self.path)
             self.ls = [f for f in self.ls if not f.startswith('.')]
 
-        except Exception as e:
-            log.write(str(e))
+        except Exception:
+            log.write(traceback=True)
             return
 
         self.num_listings = len(self.ls)

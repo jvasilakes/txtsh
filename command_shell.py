@@ -107,8 +107,8 @@ def _load(*args):
 
         return GO
 
-    except Exception as e:
-        log.write(str(e), error=True)
+    except Exception:
+        log.write(traceback=True)
         print "Loading text data failed."
 
         return GO

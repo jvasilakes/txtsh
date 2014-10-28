@@ -70,7 +70,7 @@ class Shell(object):
 
         # Ctrl+D
         except EOFError:
-            print ""
+            print "\r"
             self.run()
 
         except Exception as e:

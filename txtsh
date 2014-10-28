@@ -7,7 +7,7 @@ from shell import Shell
 
 def main():
 
-        log.write("Txtsh started.")
+        log.write(mes="Txtsh started.")
 
         sh = Shell()
         sh.run()

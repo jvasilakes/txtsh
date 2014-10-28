@@ -1,6 +1,7 @@
 import inspect
 
-#from importlib import import_module
+# not available in Python2.6
+# from importlib import import_module
 
 from header import *
 

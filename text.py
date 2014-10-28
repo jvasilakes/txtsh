@@ -32,7 +32,7 @@ class Text(object):
             data = self.readfile(data)
 
             if not data:
-                log.write("Could not read from {}" .format(self.filepath))
+                log.write(mes="Could not read from {}" .format(self.filepath))
                 print "Could not read from {}" .format(self.filepath)
                 return
 
