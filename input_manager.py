@@ -1,7 +1,6 @@
 import inspect
 
-# not available in Python2.6
-# from importlib import import_module
+from importlib import import_module
 
 from header import *
 
@@ -13,7 +12,7 @@ class InputManager(object):
         self.shell = shell
 
         # Container for cached imports from self.import_cmd_set
-        self.cmd_set_cache = {}
+        #self.cmd_set_cache = {}
 
     def _exec(self, arg, data_object=None):
 
@@ -49,18 +48,17 @@ class InputManager(object):
         sh_type = self.shell.getType
 
         if sh_type == 'Shell':
-            cmds = __import__('command_shell')
-            cmds = __import__('command_shell')
+            cmds = import_module('commands.cmd_shell')
 
         elif sh_type == 'Subshell':
-            cmds = __import__('command_subshell')
-            cmds = __import__('command_subshell')
+            cmds = import_module('commands.cmd_subshell')
 
         else:
             print "Error: Invalid shell!"
             return
 
-        self.cmd_set_cache.update({sh_type: cmds})
+        # Python does this for up 
+        # self.cmd_set_cache.update({sh_type: cmds})
 
         return cmds
 

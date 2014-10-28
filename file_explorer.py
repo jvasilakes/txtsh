@@ -39,8 +39,8 @@ class Explorer(object):
 
     def __init__(self):
 
-        self.path = HOMEDIR + '/'
         self.curs = Cursor()
+        self.path = HOMEDIR + '/'
         self.ls = os.listdir(self.path)
         self.num_listings = len(self.ls)
         self.curs.down_limit = self.num_listings + 3
@@ -49,14 +49,12 @@ class Explorer(object):
         self.create_scr()
 
     def create_scr(self):
-
         self.scr = curses.initscr()
         curses.noecho()
         curses.curs_set(1)
         self.scr.keypad(1)
 
     def manage_input(self, key):
-
         if key == KEY_QUIT:
             return (STOP, None)
 
@@ -89,7 +87,6 @@ class Explorer(object):
         return (GO, None)
 
     def list_dir(self):
-
         max_y = self.scr.getmaxyx()[0] - 5
 
         try:
@@ -117,17 +114,14 @@ class Explorer(object):
             self.curs.down_limit = self.num_listings + 3
 
     def build_path(self):
-
         self.path = self.path + self.current_file + "/"
 
     def shrink_path(self):
-
         temp = self.path.split('/')
         temp.pop(len(temp) - 2)
         self.path = '/' + '/'.join([word for word in temp if word]) + '/'
 
     def navigate(self):
-
         status = GO
 
         c = None
