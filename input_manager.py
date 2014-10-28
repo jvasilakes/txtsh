@@ -14,19 +14,20 @@ class InputManager(object):
         # Container for cached imports from self.import_cmd_set
         self.cmd_set_cache = {}
 
-    def _exec(self, input, data_object=None):
+    def _exec(self, arg, data_object=None):
 
-        if not input:
+        if not arg:
             return GO
 
-        input = input.strip().lower()
+        cmd = arg.strip().lower()
 
         cmd_set = self.import_cmd_set()
 
-        if not self.is_command(input, cmd_set):
+        if not self.is_command(cmd, cmd_set):
+            print arg
             return GO
 
-        args = self.findArgs(input)
+        args = self.findArgs(cmd)
 
         if data_object is not None:
             args.insert(1, data_object)
@@ -62,9 +63,9 @@ class InputManager(object):
 
         return cmds
 
-    def is_command(self, input, commands):
+    def is_command(self, cmd, commands):
 
-        args = input.split(None, 1)
+        args = cmd.split(None, 1)
 
         if args[0].startswith('!'):
             if args[0] in commands.map.keys():
@@ -76,9 +77,9 @@ class InputManager(object):
         else:
             return False
 
-    def findArgs(self, input):
+    def findArgs(self, cmd):
 
-        args = input.split()
+        args = cmd.split()
 
         if len(args) == 1:
             return args
