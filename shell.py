@@ -1,3 +1,7 @@
+from __future__ import print_function
+
+import log
+
 from header import *
 from input_manager import InputManager
 
@@ -8,7 +12,7 @@ class Shell(object):
 
     def __init__(self):
 
-        self.PROMPT = 'TXTSH>'
+        self.PROMPT = 'TXTSH> '
 
         self.input_manager = InputManager(self)
 
@@ -50,7 +54,7 @@ class Shell(object):
         try:
             while self.state == GO:
 
-                    print self.PROMPT,
+                    print(self.PROMPT, end="")
 
                     self.cmd = raw_input()
 
@@ -58,7 +62,7 @@ class Shell(object):
 
             while self.state == STOP:
 
-                    print "Thx 4 using txtsh!!!"
+                    print("Thx 4 using txtsh!!!")
 
                     break
 
@@ -70,11 +74,13 @@ class Shell(object):
 
         # Ctrl+D
         except EOFError:
-            print "\r"
+            #print "\r"
+            print("\r")
             self.run()
 
         except Exception as e:
-            print "The following error occurred: {}" .format(e)
+            log.write(mes=str(e), traceback=True)
+            print("The following error occurred: {}" .format(e))
             self.run()
 
 
@@ -85,17 +91,18 @@ class Subshell(Shell):
         Shell.__init__(self)
 
         if not data_object:
-            print "No data_object specified."
+            #print "No data_object specified."
+            print("No data_object specified.")
         else:
             self.data = data_object
 
-        self.PROMPT = 'ID: %d>' % self.data.id
+        self.PROMPT = 'ID: {}> ' .format(self.data.id_num)
 
     def run(self):
 
         while self.state == GO:
 
-                print self.PROMPT,
+                print(self.PROMPT, end="")
 
                 self.cmd = raw_input()
 

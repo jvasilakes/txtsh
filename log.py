@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import sys
 import traceback
 import time
@@ -63,7 +65,8 @@ class Log(object):
 
     def clear(self):
         open(self.filename, 'w').close()
-        print "Logfile cleared."
+        #print "Logfile cleared."
+        print("Logfile cleared.")
 
 
 def write(mes=None, traceback=None):

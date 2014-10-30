@@ -1,8 +1,5 @@
-#! /usr/bin/python2
-
 from sys import argv
 
-# JAKE
 def read_file(text_file):
     '''
     # Opens and reads text_file. Returns
@@ -13,7 +10,3 @@ def read_file(text_file):
         file_string = f.read()
 
     return file_string
-
-
-if __name__ == '__main__':
-    print read_file(argv[1])

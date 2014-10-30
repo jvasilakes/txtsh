@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 from read_file import read_file
 from preprocess_line import preprocess_line
 from count_ngrams import count_ngrams
@@ -43,15 +45,15 @@ class Model(object):
 
     def relations(self):
 
-        print "CLASS ATTRIBUTES\n"
-        print "----------------"
-        print "self.train_file_str"
-        print "self.train_pfs"
-        print "self.train_counts"
-        print "self.train_discounts"
-        print "self.prob_zero_counts"
-        print "self.train_probs"
-        print "self.test_file_str"
-        print "self.test_pfs"
-        print "self.test_counts"
-        print "self.perplexity"
+        print("CLASS ATTRIBUTES\n")
+        print("----------------")
+        print("self.train_file_str")
+        print("self.train_pfs")
+        print("self.train_counts")
+        print("self.train_discounts")
+        print("self.prob_zero_counts")
+        print("self.train_probs")
+        print("self.test_file_str")
+        print("self.test_pfs")
+        print("self.test_counts")
+        print("self.perplexity")

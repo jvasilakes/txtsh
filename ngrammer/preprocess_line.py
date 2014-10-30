@@ -1,9 +1,6 @@
-#! /usr/bin/python2
-
 import re
 
 
-# JAKE
 def preprocess_line(file_string):
     '''
     # Reads in file string returned by read_file()
@@ -23,8 +20,7 @@ def preprocess_line(file_string):
     # Convert all digits to 0.
     processed_string = re.sub(r'\d', r'0', processed_string)
 
-    # Replace whitespace with underscore
-    #processed_string = re.sub(r'\s', r'_', processed_string)
+    # Replace all whitespace with single space.
     processed_string = re.sub(r'\s', r' ', processed_string)
 
     return processed_string

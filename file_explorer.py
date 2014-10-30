@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import sys
 import curses
@@ -148,4 +150,5 @@ if __name__ == '__main__':
     expl = Explorer()
     path = expl.navigate()
     if path:
-        print path
+        #print path
+        print(path)

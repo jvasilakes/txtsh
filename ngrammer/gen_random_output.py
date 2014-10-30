@@ -10,7 +10,9 @@ def gen_random_output(ngram_probs_dict, n=300):
         # OrderedDict is used to ensure that each key is 
         # paired with its associated value.
         '''
-        random_string = np.random.choice(ngram_probs_dict.keys())
+
+        # Start from the end of some pretend previous sentence.
+        random_string = ". "
         
         for i in range(n):
         	od = collections.OrderedDict()
@@ -18,23 +20,8 @@ def gen_random_output(ngram_probs_dict, n=300):
         		if key.startswith(random_string[-2:]):
         			od.update({key: value})
         	next = np.random.choice(od.keys(), p=od.values())
+
+                # Just append the last character of the trigram.
         	random_string += next[-1]
         
         return random_string
-
-
-# --------------------------------------------------------#
-'''
-# This is a test string
-'''
-
-if __name__ == '__main__':
-        s = {
-            'tri': 0.07142857142857142, 's i': 0.07142857142857142,
-            'rin': 0.07142857142857142, 'his': 0.07142857142857142,
-            'thi': 0.07142857142857142, 'str': 0.07142857142857142,
-            's a': 0.07142857142857142, ' a ': 0.07142857142857142,
-            'is ': 0.07142857142857142, 'ing': 0.07142857142857142,
-            'a s': 0.07142857142857142, ' is': 0.07142857142857142,
-            ' st': 0.14285714285714285
-        }

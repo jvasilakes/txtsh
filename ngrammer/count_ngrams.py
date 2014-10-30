@@ -4,6 +4,9 @@ from collections import defaultdict
 
 
 def count_ngrams(n, data):
+    '''
+    Count n character grams from data.
+    '''
 
     counts = defaultdict(int)
 

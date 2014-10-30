@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import inspect
 
 from importlib import import_module
@@ -24,7 +26,8 @@ class InputManager(object):
         cmd_set = self.import_cmd_set()
 
         if not self.is_command(cmd, cmd_set):
-            print arg
+            #print arg
+            print(arg)
             return GO
 
         args = self.findArgs(cmd)
@@ -54,7 +57,7 @@ class InputManager(object):
             cmds = import_module('commands.cmd_subshell')
 
         else:
-            print "Error: Invalid shell!"
+            print("Error: Invalid shell!")
             return
 
         # Python does this for up 
@@ -70,7 +73,8 @@ class InputManager(object):
             if args[0] in commands.map.keys():
                 return True
             else:
-                print "'{}' is not a valid command." .format(args[0])
+                #print "'{}' is not a valid command." .format(args[0])
+                print("'{}' is not a valid command." .format(args[0]))
                 return False
 
         else:
@@ -108,7 +112,8 @@ class InputManager(object):
 
                 if not valid_quotes:
 
-                    print "Error: Incorrect quotation."
+                    #print "Error: Incorrect quotation."
+                    print("Error: Incorrect quotation.")
                     return
 
                 else:

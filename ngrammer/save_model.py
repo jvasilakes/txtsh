@@ -1,8 +1,11 @@
+from __future__ import print_function
+
 import os
 import errno
 import ast
 
 
+# TODO: Change this to use pickle/dill
 def save_model(trigram_probs_dict, model_name=None):
     '''
     # Write trigram_probs_dict to file with
@@ -21,12 +24,12 @@ def save_model(trigram_probs_dict, model_name=None):
         model_name = model_name + ".mod"
 
     if os.path.isfile(model_dir + model_name):
-        print "Overwriting exisiting model '{0}'..." .format(model_name)
+        print("Overwriting exisiting model '{0}'..." .format(model_name))
 
     with open(model_dir + model_name, 'w') as f:
         f.write(str(trigram_probs_dict))
 
-    print "Model written to '{0}'." .format(model_dir + model_name)
+    print("Model written to '{0}'." .format(model_dir + model_name))
 
 
 def open_model(file_name, model_dir='models/'):
@@ -39,7 +42,7 @@ def open_model(file_name, model_dir='models/'):
     model_dict = ast.literal_eval(s)
 
     if not isinstance(model_dict, dict):
-        print "'{0}' does not appear to be a dict." .format(file_name)
+        print("'{0}' does not appear to be a dict." .format(file_name))
         return
 
     return model_dict

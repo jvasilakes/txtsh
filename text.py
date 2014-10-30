@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import sys
 import re
 
@@ -11,7 +13,7 @@ class Text(object):
     def __init__(self):
 
         self.filepath = None
-        self.id = self.set_id()
+        self.id_num = self.set_id()
         self.title = ''
         self.contents = ''
         self.words = {}
@@ -22,7 +24,7 @@ class Text(object):
     def set_id(self):
 
         if self.members:
-            return (self.members[(len(self.members) - 1)].id) + 1
+            return (self.members[(len(self.members) - 1)].id_num) + 1
         else:
             return 1
 
@@ -33,7 +35,8 @@ class Text(object):
 
             if not data:
                 log.write(mes="Could not read from {}" .format(self.filepath))
-                print "Could not read from {}" .format(self.filepath)
+                #print "Could not read from {}" .format(self.filepath)
+                print("Could not read from {}" .format(self.filepath))
                 return
 
         # Get rid of unwanted newlines in the title.
@@ -59,7 +62,7 @@ class Text(object):
             else:
                 l.update({item: 1})
 
-        print "Data loaded into id {}." .format(self.id)
+        print("Data loaded into id {}." .format(self.id_num))
 
     def readfile(self, data):
 
