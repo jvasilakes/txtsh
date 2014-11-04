@@ -7,17 +7,30 @@ import subprocess
 
 
 class Log(object):
+    """
+    A unified log manager. 
+    Implemented as a singleton to avoid
+    nasty race-conditions.
+    """
 
     _instance = None
 
     @classmethod
     def start(cls):
+        """
+        If called when a log instance already exists,
+        just return the existing log instance.
+        """
         if not cls._instance:
             cls._instance = cls()
         return cls._instance
 
     @classmethod
     def get(cls):
+        """
+        Get the existing log instance, creating
+        one if necessary.
+        """
         if cls._instance:
             return cls._instance
         else:
@@ -34,10 +47,13 @@ class Log(object):
 
     def getTracebackInfo(self):
         t, val, tb = sys.exc_info()
-        lines = traceback.format_exc().splitlines()
-        return lines[-1], tb.tb_lineno
+        return tb
 
     def write(self, mes=None, traceback=False):
+        """
+        Write message and or latest traceback to the logfile.
+        One of message or traceback is required.
+        """
         if not mes and not traceback:
             return
 
@@ -46,9 +62,9 @@ class Log(object):
 
         with open(self.filename, 'a') as log:
             if traceback:
-                tb, lineno = self.getTracebackInfo()
-                line = "{0} ERROR line {1}: {2} \n"
-                info = [self.getTimestamp(), lineno, tb]
+                tb = self.getTracebackInfo()
+                line = "{0} ERROR \n{1} \n"
+                info = [self.getTimestamp(), tb]
                 log.write(line.format(*info))
                 if mes:
                     log.write('\t "{}"' .format(mes))
@@ -57,6 +73,9 @@ class Log(object):
                 log.write("{0} {1} \n" .format(self.getTimestamp(), mes))
 
     def view(self):
+        """
+        View the logfile from within txtsh.
+        """
         try:
             subprocess.call(['less', self.filename])
         except Exception as e:
@@ -65,10 +84,10 @@ class Log(object):
 
     def clear(self):
         open(self.filename, 'w').close()
-        #print "Logfile cleared."
         print("Logfile cleared.")
 
 
+# Methods to facilitate use of the logger.
 def write(mes=None, traceback=None):
     return Log.get().write(mes, traceback)
 

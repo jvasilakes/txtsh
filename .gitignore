@@ -1,4 +1,3 @@
-cleanup
 *.pyc
-text_samples
 .txtsh_log
+docs/*

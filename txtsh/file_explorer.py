@@ -3,7 +3,8 @@ from __future__ import print_function
 import os
 import sys
 import curses
-import log
+
+import txtsh.log as log
 
 
 ROOTDIR = '/'
@@ -14,7 +15,7 @@ KEY_CHOOSE_FILE = ord('c')
 KEY_UP = [curses.KEY_UP, ord('k')]
 KEY_DOWN = [curses.KEY_DOWN, ord('j')]
 KEY_LEFT = [curses.KEY_LEFT, ord('h')]
-KEY_RIGHT = [curses.KEY_LEFT, ord('l')]
+KEY_RIGHT = [curses.KEY_RIGHT, ord('l')]
 
 # -- Status codes ---
 STOP = 0
@@ -32,15 +33,17 @@ class Cursor(object):
         self.down_limit = 4
 
     def display(self):
-
         curses.setsyx(self.y, self.x)
         curses.doupdate()
 
 
 class Explorer(object):
+    """
+    A curses-based file explorer. 
+    Returns the path of a file selected.
+    """
 
     def __init__(self):
-
         self.curs = Cursor()
         self.path = HOMEDIR + '/'
         self.ls = os.listdir(self.path)
@@ -51,17 +54,29 @@ class Explorer(object):
         self.create_scr()
 
     def create_scr(self):
+        """
+        Start the curses screen.
+        """
         self.scr = curses.initscr()
         curses.noecho()
         curses.curs_set(1)
         self.scr.keypad(1)
 
     def manage_input(self, key):
+        """
+        Return status and file path if CHOSEN
+        to Explorer.navigate(). status is one of GO, STOP, or CHOSEN
+        """
+        status = GO
+        path = None
+
         if key == KEY_QUIT:
-            return (STOP, None)
+            status = STOP
+            path = None
 
         elif key == KEY_CHOOSE_FILE:
-            return (CHOSEN, self.path + self.current_file)
+            status = CHOSEN
+            path = self.path + self.current_file
 
         elif key in KEY_UP:
             if self.curs.y == self.curs.up_limit:
@@ -86,33 +101,34 @@ class Explorer(object):
         else:
             pass
 
-        return (GO, None)
+        return (status, path)
 
     def list_dir(self):
+        """
+        List the contents of the current directory
+        in the explorer screen.
+        """
         max_y = self.scr.getmaxyx()[0] - 5
 
+        # Get the current directory listing.
         try:
             self.ls = os.listdir(self.path)
-            self.ls = [f for f in self.ls if not f.startswith('.')]
-
+            # Filter the directory listing to not include hidden files.
+            self.ls = filter(lambda f: not f.startswith('.'), self.ls)
+            self.num_listings = len(self.ls)
         except Exception:
             log.write(traceback=True)
             return
 
-        self.num_listings = len(self.ls)
-
+        # Display the directory listing.
         if self.num_listings == 0:
             self.scr.addstr(4, 0, '*EMPTY*')
-
         else:
-
             self.scr.addstr(2, 0, self.path)
-
             for i in xrange(len(self.ls)):
                 if i < max_y:
                     self.scr.addstr(i + 4, 0, self.ls[i])
                     self.scr.refresh()
-
             self.curs.down_limit = self.num_listings + 3
 
     def build_path(self):
@@ -124,6 +140,10 @@ class Explorer(object):
         self.path = '/' + '/'.join([word for word in temp if word]) + '/'
 
     def navigate(self):
+        """
+        The driver function for the file explorer.
+        Returns the path of a selected file to the txtsh shell.
+        """
         status = GO
 
         c = None
@@ -132,7 +152,7 @@ class Explorer(object):
             self.scr.clear()
             self.scr.addstr(0, 0, "TXTSH FILE EXPLORER")
             self.scr.addstr(1, 0, "'c' to choose file, \
-                    'q' to quit without choosing.")
+                                  'q' to quit without choosing.")
 
             self.list_dir()
             self.curs.display()
@@ -150,5 +170,4 @@ if __name__ == '__main__':
     expl = Explorer()
     path = expl.navigate()
     if path:
-        #print path
         print(path)

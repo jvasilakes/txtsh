@@ -3,11 +3,14 @@ from __future__ import print_function
 import sys
 import re
 
-import log
+import txtsh.log as log
 
 
 class Text(object):
-
+    """
+    Text loaded in from a file or string on the 
+    command line. Given a unique ID.
+    """
     members = []
 
     def __init__(self):
@@ -35,7 +38,6 @@ class Text(object):
 
             if not data:
                 log.write(mes="Could not read from {}" .format(self.filepath))
-                #print "Could not read from {}" .format(self.filepath)
                 print("Could not read from {}" .format(self.filepath))
                 return
 
@@ -45,7 +47,7 @@ class Text(object):
         self.contents = data
         # Tokenize the data, separating contractions such as "I'm"
         # into "I" and "'m", and separating punctuation.
-        temp = re.findall(r'[^\'\w+\s+]|\'?\w+', data)
+        temp = re.findall(r'[^\'\w+\s+]|\'?\w+\'?', data)
 
         for item in temp:
 
@@ -65,13 +67,11 @@ class Text(object):
         print("Data loaded into id {}." .format(self.id_num))
 
     def readfile(self, data):
-
         self.filepath = data
 
         try:
             with open(data, 'r') as f:
                 data = f.read()
                 return data
-
         except:
             return None

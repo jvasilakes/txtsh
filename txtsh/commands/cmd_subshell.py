@@ -2,10 +2,9 @@ from __future__ import print_function
 
 import subprocess
 
-import pager
-
-from header import *
-from dict_methods import getMaxKey
+import txtsh.pager as pager
+from txtsh.header import *
+from txtsh.dict_methods import getMaxKey
 
 
 def _drop(*args):

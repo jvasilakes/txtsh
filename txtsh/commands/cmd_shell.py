@@ -4,12 +4,11 @@ import sys
 import os
 import subprocess
 
-import shell
-import file_explorer
-import log
-
-from header import *
-from text import Text
+import txtsh.shell as shell
+import txtsh.file_explorer as file_explorer
+import txtsh.log as log
+from txtsh.header import *
+from txtsh.text import Text
 
 
 def _help(*args):

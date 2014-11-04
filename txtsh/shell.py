@@ -1,69 +1,69 @@
 from __future__ import print_function
 
-import log
+import txtsh.log as log
 
-from header import *
-from input_manager import InputManager
+from txtsh.header import *
+from txtsh.input_manager import InputManager
 
 
 class Shell(object):
+    """
+    The main txtsh shell.
+    Implemented (currently quite poorly) as a singleton.
+    """
 
     members = []
 
     def __init__(self):
 
         self.PROMPT = 'TXTSH> '
-
         self.input_manager = InputManager(self)
 
+        # Starting values.
         self.state = GO
-
         self.cmd = None
 
         # If this is the first shell spawned upon
-        # starting the program.
+        # starting the program, show the user some
+        # helpful(?) information.
         if not self.members:
             self.input_manager._exec('!info')
 
         self.addToMembers()
 
-    # Returns shell's type as a string. Used within _exec()
     @property
     def getType(self):
-
+        """
+        Return the shell's type as a string.
+        Used within InputManager._exec().
+        """
         temp = str(type(self))
-
         return temp.rsplit('.')[-1][:-2]
 
     def addToMembers(self):
-
         if not isinstance(self, Subshell):
             for shell in self.members:
                 if not isinstance(shell, Subshell):
 
                     try:
                         raise Exception("Only one main shell allowed.")
-
                     except:
                         return
 
         self.members.append(self)
 
     def run(self):
-
+        """
+        The driver for the shell.
+        """
         try:
             while self.state == GO:
-
                     print(self.PROMPT, end="")
-
                     self.cmd = raw_input()
-
                     self.state = self.input_manager._exec(self.cmd)
 
             while self.state == STOP:
-
                     print("Thx 4 using txtsh!!!")
-
                     break
 
         # Ctrl+C
@@ -74,7 +74,6 @@ class Shell(object):
 
         # Ctrl+D
         except EOFError:
-            #print "\r"
             print("\r")
             self.run()
 
@@ -85,13 +84,17 @@ class Shell(object):
 
 
 class Subshell(Shell):
+    """
+    Created when user types "!use <ID>".
+    Kept distinct from the main shell
+    to avoid confusion.
+    """
 
     def __init__(self, data_object):
 
         Shell.__init__(self)
 
         if not data_object:
-            #print "No data_object specified."
             print("No data_object specified.")
         else:
             self.data = data_object
@@ -99,16 +102,9 @@ class Subshell(Shell):
         self.PROMPT = 'ID: {}> ' .format(self.data.id_num)
 
     def run(self):
-
         while self.state == GO:
-
                 print(self.PROMPT, end="")
-
                 self.cmd = raw_input()
-
-                self.state = self.input_manager._exec(
-                                                    self.cmd,
-                                                    data_object=self.data
-                                                     )
-
+                self.state = self.input_manager._exec(self.cmd,
+                                                      data_object=self.data)
         del self
