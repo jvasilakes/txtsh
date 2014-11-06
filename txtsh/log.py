@@ -1,6 +1,5 @@
 from __future__ import print_function
 
-import sys
 import traceback
 import time
 import subprocess
@@ -8,7 +7,7 @@ import subprocess
 
 class Log(object):
     """
-    A unified log manager. 
+    A unified log manager.
     Implemented as a singleton to avoid
     nasty race-conditions.
     """
@@ -44,17 +43,17 @@ class Log(object):
             # Since _instance must be a Log instance, use it to log our error.
             self._instance.write(mes="Tried to create more than one logger.")
             del self
-            raise Exception("SingletonError: Tried to create more than one logger.")
+            raise Exception("SingletonError: Tried to \
+                            create more than one logger.")
 
         self.filename = filename
         self.timestamp = None
 
     def getTimestamp(self):
-         return "[{0}]" .format(time.strftime("%H:%M:%S"))
+        return "[{0}]" .format(time.strftime("%H:%M:%S"))
 
     def getTracebackInfo(self):
-        t, val, tb = sys.exc_info()
-        return tb
+        return traceback.format_exc()
 
     def write(self, mes=None, traceback=False):
         """
@@ -95,16 +94,27 @@ class Log(object):
 
 
 # Methods to facilitate use of the logger.
-def write(mes=None, traceback=None):
+def start(filename):
+    return Log.start(filename)
+
+
+def write(mes=None, traceback=False):
     return Log.get().write(mes, traceback)
+
 
 def view():
     return Log.get().view()
 
+
 def clear():
     return Log.get().clear()
 
-# Used for testing __init__
+
+# Used for testing.
 if __name__ == '__main__':
     l1 = Log.start('tst.log')
-    l2 = Log('new.log')
+    try:
+        1/0
+    except:
+        l1.write(traceback=True)
+        print("Wrote traceback.")
