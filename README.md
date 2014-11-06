@@ -1,4 +1,4 @@
-A crappy little shell for text analysis.
+The little text-analysis shell that could.
 
 
 +++ Main shell commands +++
