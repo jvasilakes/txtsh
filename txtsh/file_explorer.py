@@ -128,16 +128,14 @@ class Explorer(object):
             for i in xrange(len(self.ls)):
                 if i < max_y:
                     self.scr.addstr(i + 4, 0, self.ls[i])
-                    self.scr.refresh()
+                    self.scr.noutrefresh()
             self.curs.down_limit = self.num_listings + 3
 
     def build_path(self):
-        self.path = self.path + self.current_file + "/"
+        self.path = os.path.join(self.path, self.current_file)
 
     def shrink_path(self):
-        temp = self.path.split('/')
-        temp.pop(len(temp) - 2)
-        self.path = '/' + '/'.join([word for word in temp if word]) + '/'
+        self.path = os.path.abspath(os.path.join(self.path, '..'))
 
     def navigate(self):
         """
@@ -149,7 +147,7 @@ class Explorer(object):
         c = None
         while status == GO:
 
-            self.scr.clear()
+            self.scr.erase()
             self.scr.addstr(0, 0, "TXTSH FILE EXPLORER")
             self.scr.addstr(1, 0, "'c' to choose file, \
                                   'q' to quit without choosing.")
