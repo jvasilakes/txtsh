@@ -25,13 +25,11 @@ class InputManager(object):
         if not arg:
             return GO
 
-        cmd = arg.strip().lower()
-
-        if not self.is_command(cmd, self.cmd_set):
+        if not self.is_command(arg, self.cmd_set):
             print(arg)
             return GO
 
-        args = self.findArgs(cmd)
+        args = self.findArgs(arg)
 
         if data_object is not None:
             args.insert(1, data_object)
@@ -63,10 +61,12 @@ class InputManager(object):
 
         return cmds
 
-    def is_command(self, cmd, commands):
-        args = cmd.split(None, 1)
+    def is_command(self, arg, commands):
+        arg = arg.strip().lower()
+        args = arg.split(None, 1)
 
         if args[0].startswith('!'):
+
             if args[0] in commands.map.keys():
                 return True
             else:
