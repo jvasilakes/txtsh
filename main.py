@@ -5,9 +5,7 @@ from txtsh.shell import Shell
 
 
 def main():
-    """
-    The main driver function, which starts the shell.
-    """
+
     log.start('.txtsh_log')
     log.write(mes="Txtsh started.")
 
