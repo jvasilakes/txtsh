@@ -16,13 +16,13 @@ class Log(object):
     _instance = None
 
     @classmethod
-    def start(cls):
+    def start(cls, filename):
         """
         If called when a log instance already exists,
         just return the existing log instance.
         """
         if not cls._instance:
-            cls._instance = cls()
+            cls._instance = cls(filename)
         return cls._instance
 
     @classmethod
@@ -37,9 +37,16 @@ class Log(object):
             cls._instance = cls()
             return cls._instance
 
-    def __init__(self):
+    def __init__(self, filename):
 
-        self.filename = ".txtsh_log"
+        if self._instance:
+            # This is a bit of a trick.
+            # Since _instance must be a Log instance, use it to log our error.
+            self._instance.write(mes="Tried to create more than one logger.")
+            del self
+            raise Exception("SingletonError: Tried to create more than one logger.")
+
+        self.filename = filename
         self.timestamp = None
 
     def getTimestamp(self):
@@ -96,3 +103,8 @@ def view():
 
 def clear():
     return Log.get().clear()
+
+# Used for testing __init__
+if __name__ == '__main__':
+    l1 = Log.start('tst.log')
+    l2 = Log('new.log')
