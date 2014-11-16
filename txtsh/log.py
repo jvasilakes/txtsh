@@ -40,7 +40,8 @@ class Log(object):
 
         if self._instance:
             # This is a bit of a trick.
-            # Since _instance must be a Log instance, use it to log our error.
+            # Since _instance must be a Log instance,
+            # use it to log our error.
             self._instance.write(mes="Tried to create more than one logger.")
             del self
             raise Exception("SingletonError: Tried to \
