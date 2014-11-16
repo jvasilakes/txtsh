@@ -17,31 +17,38 @@ class InputManager(object):
         self.VERBOSE = verbose
         self.shell = shell
         self.cmd_set = self.import_cmd_set()
-        self.history = '.txtsh_history'
+        self.history = []
 
-    def _exec(self, arg, data_object=None):
+    def manage(self, arg, data_object=None):
         """
         Parse command-line input and execute
         the command, if present.
         """
-
-        if not arg:
-            return GO
-
-        with open(self.history, 'a') as fp:
-            fp.write(arg + '\n')
-
         if not self.is_command(arg, self.cmd_set):
             print(arg)
             return GO
 
         args = self.parseArgs(arg)
+
+        # For Subshells. If we're dealing with a 
+        # loaded text object, make sure it's an
+        # argument to the command.
+        if data_object:
+                args.insert(1, data_object)
+
+        # If it's a valid command
+        # save it in the history.
+        self.addToHistory(args)
+
         if self.VERBOSE:
             print(args)
 
-        if data_object:
-            args.insert(1, data_object)
+        return self._exec(args)
 
+    def _exec(self, args):
+        """
+        Execute the command contained within args.
+        """
         if len(args) == 1:
             status = self.cmd_set.map[args[0]]()
         elif len(args) > 1:
@@ -67,6 +74,9 @@ class InputManager(object):
             raise Exception("BadSh: Invalid shell!")
 
         return cmds
+
+    def addToHistory(self, args):
+        self.history.append(args)
 
     def is_command(self, arg, commands):
         """

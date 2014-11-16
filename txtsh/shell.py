@@ -27,7 +27,7 @@ class Shell(object):
         # starting the program, show the user some
         # exciting information.
         if not self.members:
-            self.input_manager._exec('!info')
+            self.input_manager.manage('!info')
 
         self.addToMembers()
 
@@ -35,7 +35,7 @@ class Shell(object):
     def Type(self):
         """
         Return the shell's type as a string.
-        Used within InputManager._exec().
+        Used within InputManager.import_cmd_set()
         """
         temp = str(type(self))
         return temp.rsplit('.')[-1][:-2]
@@ -55,7 +55,7 @@ class Shell(object):
             while self.state == GO:
                 print(self.PROMPT, end="")
                 self.cmd = raw_input()
-                self.state = self.input_manager._exec(self.cmd)
+                self.state = self.input_manager.manage(self.cmd)
 
             while self.state == STOP:
                 print("Thx 4 using txtsh!!!")
@@ -100,6 +100,6 @@ class Subshell(Shell):
         while self.state == GO:
             print(self.PROMPT, end="")
             self.cmd = raw_input()
-            self.state = self.input_manager._exec(self.cmd,
+            self.state = self.input_manager.manage(self.cmd,
                                                   data_object=self.data)
         del self
