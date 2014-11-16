@@ -206,6 +206,9 @@ def _restart(*args):
 
 def _update(*args):
 
+    print("Don't use this...")
+    return GO
+
     print("Updating txtsh...")
 
     try:
