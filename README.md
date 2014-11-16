@@ -1,4 +1,4 @@
-A crappy little shell for text analysis.
+The little text-analysis shell that could.
 
 
 +++ Main shell commands +++
@@ -38,4 +38,4 @@ A crappy little shell for text analysis.
 
 	!nums: Display number data for loaded text.
 
-	!hist: Histogram of word lengths in file.
+	!hist: Histogram of word lengths for loaded text.
