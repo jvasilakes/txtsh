@@ -35,7 +35,7 @@ class InputManager(object):
             print(arg)
             return GO
 
-        args = self.findArgs(arg)
+        args = self.parseArgs(arg)
         if self.VERBOSE:
             print(args)
 
@@ -53,7 +53,7 @@ class InputManager(object):
 
     def import_cmd_set(self):
         """
-        Import the correct command set for
+        Import the correct commands for
         the given shell type.
         """
 
@@ -69,6 +69,10 @@ class InputManager(object):
         return cmds
 
     def is_command(self, arg, commands):
+        """
+        Checks if the input is a valid
+        according to the imported command set.
+        """
         arg = arg.strip().lower()
         args = arg.split(None, 1)
 
@@ -82,9 +86,12 @@ class InputManager(object):
         else:
             return False
 
-    def findArgs(self,cmd):
+    def parseArgs(self,cmd):
+        """
+        Parses the raw input into a list of arguments.
+        """
 
-        strings = re.search(r'([\'"])(?P<string>[^\1]+)\1', cmd)
+        strings = re.search(r'([\'"])(?P<string>[^\1]+?)\1', cmd)
 
         if strings:
             strings = strings.group('string')
