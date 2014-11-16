@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import inspect
+import re
 from importlib import import_module
 
 from txtsh.header import *
@@ -11,10 +12,12 @@ class InputManager(object):
     The interpreter for the txtsh shell.
     """
 
-    def __init__(self, shell):
+    def __init__(self, shell, verbose=False):
 
+        self.VERBOSE = verbose
         self.shell = shell
         self.cmd_set = self.import_cmd_set()
+        self.history = '.txtsh_history'
 
     def _exec(self, arg, data_object=None):
         """
@@ -25,13 +28,18 @@ class InputManager(object):
         if not arg:
             return GO
 
+        with open(self.history, 'a') as fp:
+            fp.write(arg + '\n')
+
         if not self.is_command(arg, self.cmd_set):
             print(arg)
             return GO
 
         args = self.findArgs(arg)
+        if self.VERBOSE:
+            print(args)
 
-        if data_object is not None:
+        if data_object:
             args.insert(1, data_object)
 
         if len(args) == 1:
@@ -49,15 +57,14 @@ class InputManager(object):
         the given shell type.
         """
 
-        sh_type = self.shell.getType
+        sh_type = self.shell.Type
 
         if sh_type == 'Shell':
             cmds = import_module('txtsh.commands.cmd_shell')
         elif sh_type == 'Subshell':
             cmds = import_module('txtsh.commands.cmd_subshell')
         else:
-            print("Error: Invalid shell!")
-            return
+            raise Exception("BadSh: Invalid shell!")
 
         return cmds
 
@@ -75,51 +82,18 @@ class InputManager(object):
         else:
             return False
 
-    def findArgs(self, cmd):
-        """
-        Find the arguments and handle
-        quoted strings.
-        """
-        args = cmd.split()
+    def findArgs(self,cmd):
 
-        if len(args) == 1:
-            return args
+        strings = re.search(r'([\'"])(?P<string>[^\1]+)\1', cmd)
+
+        if strings:
+            strings = strings.group('string')
+            strings = [strings]
         else:
-            quote_found = False
-            valid_quotes = False
+            strings = []
 
-            for arg in args:
-                if arg.startswith('"'):
-                    quote_found = True
-                    start_idx = args.index(arg)
+        args = re.match(r'![^\'"]+', cmd).group(0)
+        args = args.split()
+        args.extend(strings)
 
-                    for arg in args[start_idx:]:
-                        if arg.endswith('"'):
-                            valid_quotes = True
-                            end_idx = args.index(arg)
-                            break
-
-            # Return with error if valid quotation was not used.
-            if quote_found:
-                if not valid_quotes:
-                    print("Error: Incorrect quotation.")
-                    return
-                else:
-                    args[start_idx] = args[start_idx].split('"')[1]
-                    args[end_idx] = args[end_idx].split('"')[0]
-
-                    # Join everything between the quotes into one argument.
-                    temp = ' '.join(args[start_idx:end_idx + 1])
-
-                    # Remove the elements we just joined together
-                    # from the argument list.
-                    for arg in args[start_idx:end_idx + 1]:
-                        args.remove(arg)
-
-                    # Insert the new, single string
-                    # argument into the argument list.
-                    args.insert(start_idx, temp)
-
-            # Return unadulterated args if no
-            # quotation found.
-            return args
+        return args
