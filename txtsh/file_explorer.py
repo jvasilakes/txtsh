@@ -7,22 +7,6 @@ import curses
 import txtsh.log as log
 
 
-ROOTDIR = '/'
-HOMEDIR = os.path.expanduser("~")
-
-KEY_QUIT = ord('q')
-KEY_CHOOSE_FILE = ord('c')
-KEY_UP = [curses.KEY_UP, ord('k')]
-KEY_DOWN = [curses.KEY_DOWN, ord('j')]
-KEY_LEFT = [curses.KEY_LEFT, ord('h')]
-KEY_RIGHT = [curses.KEY_RIGHT, ord('l')]
-
-# -- Status codes ---
-STOP = 0
-GO = 1
-CHOSEN = 2
-
-
 class Cursor(object):
 
     def __init__(self):
@@ -44,14 +28,34 @@ class Explorer(object):
     """
 
     def __init__(self):
+
+        # Status codes
+        self.STOP = 0
+        self.GO = 1
+        self.CHOSEN = 2
+
+        # Directory aliases
+        self.ROOTDIR = '/'
+        self.HOMEDIR = os.path.expanduser("~")
+
+        # Key aliases
+        self.KEY_QUIT = ord('q')
+        self.KEY_CHOOSE_FILE = ord('c')
+        self.KEY_UP = [curses.KEY_UP, ord('k')]
+        self.KEY_DOWN = [curses.KEY_DOWN, ord('j')]
+        self.KEY_LEFT = [curses.KEY_LEFT, ord('h')]
+        self.KEY_RIGHT = [curses.KEY_RIGHT, ord('l')]
+
+        # Create a cursor
         self.curs = Cursor()
-        self.path = HOMEDIR + '/'
+        # Start the screen
+        self.create_scr()
+
+        self.path = self.HOMEDIR + '/'
         self.ls = os.listdir(self.path)
         self.num_listings = len(self.ls)
         self.curs.down_limit = self.num_listings + 3
         self.current_file = self.ls[self.curs.y - 4]
-
-        self.create_scr()
 
     def create_scr(self):
         """
@@ -62,39 +66,65 @@ class Explorer(object):
         curses.curs_set(1)
         self.scr.keypad(1)
 
+    def navigate(self):
+        """
+        The driver function for the file explorer.
+        Returns the path of a selected file to the txtsh shell.
+        """
+        status = self.GO
+
+        c = None
+        while status == self.GO:
+
+            self.scr.erase()
+            self.scr.addstr(0, 0, "TXTSH FILE EXPLORER")
+            self.scr.addstr(1, 0, "'c' to choose file, \
+                                  'q' to quit without choosing.")
+
+            self.list_dir()
+            self.curs.display()
+            self.current_file = self.ls[self.curs.y - 4]
+
+            c = self.scr.getch()
+            (status, path) = self.manage_input(c)
+
+        curses.endwin()
+
+        return path
+
     def manage_input(self, key):
         """
         Return status and file path if CHOSEN
         to Explorer.navigate(). status is one of GO, STOP, or CHOSEN
         """
-        status = GO
+        status = self.GO
         path = None
 
-        if key == KEY_QUIT:
-            status = STOP
+        if key == self.KEY_QUIT:
+            status = self.STOP
             path = None
 
-        elif key == KEY_CHOOSE_FILE:
-            status = CHOSEN
-            path = self.path + self.current_file
+        elif key == self.KEY_CHOOSE_FILE:
+            status = self.CHOSEN
+            path = self.path + '/' + self.current_file
 
-        elif key in KEY_UP:
+        elif key in self.KEY_UP:
             if self.curs.y == self.curs.up_limit:
                 pass
             else:
                 self.curs.y -= 1
 
-        elif key in KEY_DOWN:
+        elif key in self.KEY_DOWN:
             if self.curs.y == self.curs.down_limit:
                 pass
             else:
                 self.curs.y += 1
 
-        elif key in KEY_RIGHT:
+        elif key in self.KEY_RIGHT:
             self.build_path()
             self.curs.y = 4
 
-        elif key in KEY_LEFT:
+        elif key in self.KEY_LEFT:
             self.shrink_path()
             self.curs.y = 4
 
@@ -116,6 +146,7 @@ class Explorer(object):
             # Filter the directory listing to not include hidden files.
             self.ls = filter(lambda f: not f.startswith('.'), self.ls)
             self.num_listings = len(self.ls)
+
         except Exception:
             log.write(traceback=True)
             return
@@ -136,32 +167,6 @@ class Explorer(object):
 
     def shrink_path(self):
         self.path = os.path.abspath(os.path.join(self.path, '..'))
-
-    def navigate(self):
-        """
-        The driver function for the file explorer.
-        Returns the path of a selected file to the txtsh shell.
-        """
-        status = GO
-
-        c = None
-        while status == GO:
-
-            self.scr.erase()
-            self.scr.addstr(0, 0, "TXTSH FILE EXPLORER")
-            self.scr.addstr(1, 0, "'c' to choose file, \
-                                  'q' to quit without choosing.")
-
-            self.list_dir()
-            self.curs.display()
-            self.current_file = self.ls[self.curs.y - 4]
-
-            c = self.scr.getch()
-            (status, path) = self.manage_input(c)
-
-        curses.endwin()
-
-        return path
 
 
 if __name__ == '__main__':
