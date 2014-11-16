@@ -7,33 +7,15 @@ import subprocess
 import txtsh.shell as shell
 import txtsh.file_explorer as file_explorer
 import txtsh.log as log
-from txtsh.header import *
+import txtsh.pager as pager
+
 from txtsh.text import Text
+from txtsh.header import *
 
 
 def _help(*args):
 
-    print("\r")
-    print("--- Main shell commands ---")
-    print("!info: display version information.")
-    print("!log: display contents of log file.")
-    print("!help: display this help screen.")
-    print("!quit: quit the shell.")
-    print("!update: update txtsh to the latest version.")
-    print("!load DATA_TYPE, DATA: load DATA into database. \
-DATA_TYPE must be 'string' or 'file'.")
-    print("!free ID: unload text object stored in ID.")
-    print("!use ID: go to subshell to manipulate text data stored in ID.")
-    print("!list: print all loaded objects.")
-
-    print("\n--- Subshell commands ---")
-    print("!drop: Drop out of subshell created by '!use'.")
-    print("!print: Display loaded text.")
-    print("!words: Display word data for loaded text.")
-    print("!punct: Display punctuation data for loaded text.")
-    print("!nums: Display number data for loaded text.")
-    print("!hist: Histogram of word lengths in file.")
-    print("\r")
+    pager.page('README.md')
 
     return GO
 
