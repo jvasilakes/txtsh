@@ -9,15 +9,15 @@ from txtsh.input_manager import InputManager
 class Shell(object):
     """
     The main txtsh shell.
-    Implemented (currently quite poorly) as a singleton.
+    Implemented as a singleton.
     """
 
     members = []
 
-    def __init__(self):
+    def __init__(self, verbose=False):
 
         self.PROMPT = 'TXTSH> '
-        self.input_manager = InputManager(self)
+        self.input_manager = InputManager(self, verbose)
 
         # Starting values.
         self.state = GO
@@ -25,14 +25,14 @@ class Shell(object):
 
         # If this is the first shell spawned upon
         # starting the program, show the user some
-        # helpful(?) information.
+        # exciting information.
         if not self.members:
             self.input_manager._exec('!info')
 
         self.addToMembers()
 
     @property
-    def getType(self):
+    def Type(self):
         """
         Return the shell's type as a string.
         Used within InputManager._exec().
@@ -41,16 +41,11 @@ class Shell(object):
         return temp.rsplit('.')[-1][:-2]
 
     def addToMembers(self):
-        if not isinstance(self, Subshell):
-            for shell in self.members:
-                if not isinstance(shell, Subshell):
-
-                    try:
-                        raise Exception("Only one main shell allowed.")
-                    except:
-                        return
-
-        self.members.append(self)
+        if isinstance(self, Subshell):
+            self.members.append(self)
+        else:
+            if not self.members:
+                self.members.append(self)
 
     def run(self):
         """
@@ -58,13 +53,13 @@ class Shell(object):
         """
         try:
             while self.state == GO:
-                    print(self.PROMPT, end="")
-                    self.cmd = raw_input()
-                    self.state = self.input_manager._exec(self.cmd)
+                print(self.PROMPT, end="")
+                self.cmd = raw_input()
+                self.state = self.input_manager._exec(self.cmd)
 
             while self.state == STOP:
-                    print("Thx 4 using txtsh!!!")
-                    break
+                print("Thx 4 using txtsh!!!")
+                break
 
         # Ctrl+C
         except KeyboardInterrupt:
@@ -103,8 +98,8 @@ class Subshell(Shell):
 
     def run(self):
         while self.state == GO:
-                print(self.PROMPT, end="")
-                self.cmd = raw_input()
-                self.state = self.input_manager._exec(self.cmd,
-                                                      data_object=self.data)
+            print(self.PROMPT, end="")
+            self.cmd = raw_input()
+            self.state = self.input_manager._exec(self.cmd,
+                                                  data_object=self.data)
         del self
