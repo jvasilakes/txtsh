@@ -34,6 +34,7 @@ class Text(object):
     def load_data(self, data_type, data):
 
         if data_type.lower() == 'file':
+            print(data)
             data = self.readfile(data)
 
             if not data:
@@ -47,7 +48,7 @@ class Text(object):
         self.contents = data
         # Tokenize the data, separating contractions such as "I'm"
         # into "I" and "'m", and separating punctuation.
-        temp = re.findall(r'[^\'\w+\s+]|\'?\w+\'?', data)
+        temp = re.findall(r'[^\'\w+\s+]|\'?\w+(?:\'(?=\s))?', data)
 
         for item in temp:
 
@@ -72,6 +73,6 @@ class Text(object):
         try:
             with open(data, 'r') as f:
                 data = f.read()
-                return data
+            return data
         except:
             return None
