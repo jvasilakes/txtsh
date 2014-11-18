@@ -81,9 +81,10 @@ class Log(object):
             mes = str(mes)
 
         with open(self.filename, 'a') as log:
+            ts = self.getTimestamp()
+
             if traceback:
                 tb = self.getTracebackInfo()
-                ts = self.getTimestamp()
                 if tb:
                     line = "{0} ERROR \n{1} \n"
                     log.write(line.format(ts, tb))
