@@ -8,8 +8,17 @@ import subprocess
 class Log(object):
     """
     A unified log manager.
-    Implemented as a singleton to avoid
-    nasty race-conditions.
+    Implemented as a true singleton
+    to avoid race-conditions and 
+    facilitate use.
+
+    Usage:
+        import log
+        log.start([filename])
+        log.write(mes="Your message here.", traceback=True)
+
+    If traceback=True. The latest traceback is written to 
+    the log file.
     """
 
     _instance = None
@@ -22,7 +31,8 @@ class Log(object):
         """
         if not cls._instance:
             cls._instance = cls(filename)
-        return cls._instance
+        else:
+            return cls._instance
 
     @classmethod
     def get(cls):
@@ -44,8 +54,7 @@ class Log(object):
             # use it to log our error.
             self._instance.write(mes="Tried to create more than one logger.")
             del self
-            raise Exception("SingletonError: Tried to \
-                            create more than one logger.")
+            raise Exception("SingletonError: Tried to create more than one logger.")
 
         self.filename = filename
         self.timestamp = None
@@ -54,7 +63,11 @@ class Log(object):
         return "[{0}]" .format(time.strftime("%H:%M:%S"))
 
     def getTracebackInfo(self):
-        return traceback.format_exc()
+        tb = traceback.format_exc()
+        if 'None' in tb:
+            return None
+        else:
+            return tb
 
     def write(self, mes=None, traceback=False):
         """
@@ -70,14 +83,16 @@ class Log(object):
         with open(self.filename, 'a') as log:
             if traceback:
                 tb = self.getTracebackInfo()
-                line = "{0} ERROR \n{1} \n"
-                info = [self.getTimestamp(), tb]
-                log.write(line.format(*info))
+                ts = self.getTimestamp()
+                if tb:
+                    line = "{0} ERROR \n{1} \n"
+                    log.write(line.format(ts, tb))
                 if mes:
-                    log.write('\t "{}"' .format(mes))
+                    line = "{0} MESSAGE: {1}\n"
+                    log.write(line.format(ts, mes))
 
             else:
-                log.write("{0} {1} \n" .format(self.getTimestamp(), mes))
+                log.write("{0} {1}\n" .format(ts, mes))
 
     def view(self):
         """
@@ -113,9 +128,5 @@ def clear():
 
 # Used for testing.
 if __name__ == '__main__':
-    l1 = Log.start('tst.log')
-    try:
-        1/0
-    except:
-        l1.write(traceback=True)
-        print("Wrote traceback.")
+    start('tst.log')
+    write(mes="Testing traceback.", traceback=True)
