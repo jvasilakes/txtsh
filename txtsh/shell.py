@@ -74,7 +74,7 @@ class Shell(object):
 
         except Exception as e:
             log.write(mes=str(e), traceback=True)
-            print("The following error occurred: {}" .format(e))
+            print("ERROR: {}" .format(e))
             self.run()
 
 
